@@ -1,0 +1,28 @@
+# ====== Maven ======
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.jar
+*.war
+*.ear
+
+# ====== IntelliJ IDEA ======
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ====== Java ======
+*.class
+*.log
+*.ctxt
+hs_err_pid*
+
+# ====== OS Generated ======
+.DS_Store
+Thumbs.db
+
+# ====== Misc ======
+*.swp
+*.bak
+*~
