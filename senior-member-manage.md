@@ -4,7 +4,7 @@
 
 前端开发:满末西
 
-后端:天坑
+后端:蓝宝
 
 git push -u origin feature/senior/member-manage 将本地分支推送到远程并进行绑定
 
