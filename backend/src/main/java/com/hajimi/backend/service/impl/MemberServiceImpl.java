@@ -1,15 +1,26 @@
 package com.hajimi.backend.service.impl;
 
+import com.hajimi.backend.dto.MemberUpdateDto;
+import com.hajimi.backend.entity.Group;
+import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.mapper.GroupMapper;
 import com.hajimi.backend.mapper.MemberMapper;
-import com.hajimi.backend.pojo.Group;
-import com.hajimi.backend.pojo.Member;
 import com.hajimi.backend.service.MemberService;
+import com.hajimi.backend.vo.GroupVo;
+import com.hajimi.backend.vo.MemberVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @Auther: 与或非
+ * @Date: 2026/8/20 - 08 - 20
+ * @Description: com.hajimi.backend.service.impl
+ * @version: 1.0
+ * 组员业务实现类
+ */
 @Service
 public class MemberServiceImpl implements MemberService {
 
@@ -19,24 +30,31 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private GroupMapper groupMapper;
 
-    // 查询组员个人信息
     @Override
-    public Member selectMember(Integer id) {
-        return memberMapper.selectByID(id);
+    public MemberVo getById(Integer id) {
+        Member m = memberMapper.getById(id);
+        if (m == null){
+            return null;
+        }
+        MemberVo mv = new MemberVo();
+        BeanUtils.copyProperties(m, mv);
+        return mv;
     }
 
-    // 修改组员个人信息
     @Override
-    public void updateMember(Member member) {
-        memberMapper.update(member);
+    public void update(MemberUpdateDto dto) {
+        memberMapper.update(dto);
     }
 
-    // 查询个人所在小组信息
     @Override
-    public Group selectGroup(Integer groupId) {
-        List<Member> members = memberMapper.selectByGroupID(groupId);
-        Group group = groupMapper.selectByID(groupId);
-        group.setMembers(members);
-        return group;
+    public GroupVo getGroup(Integer groupId) {
+        List<MemberVo> members = memberMapper.getByGroupId(groupId);
+        Group g = groupMapper.getById(groupId);
+        GroupVo gv = new GroupVo();
+        BeanUtils.copyProperties(g, gv);
+        gv.setMembers(members);
+        return gv;
     }
+
+
 }

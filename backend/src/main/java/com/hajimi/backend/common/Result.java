@@ -1,25 +1,22 @@
-package com.hajimi.backend.pojo;
+package com.hajimi.backend.common;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 
 /**
- * 规范后端返回给前端的数据格式
- * 例如：
- *   {
- *     "code": 1,
- *     "msg": "操作成功",
- *     "data": ...
- *   }
+ * @Auther: jone
+ * @Date: 2026/8/19 - 08 - 19 - 16:26
+ * @Description: com.hajimi.backend.common
+ * @version: 1.0
  */
+@AllArgsConstructor
 @Data
-@JsonPropertyOrder({"code", "msg", "data"})     // 指定返回结果时的JSON字段顺序，不加容易乱序
+@NoArgsConstructor
 public class Result {
-
-    private Integer code; // 编码：1成功，0为失败
-    private String msg; // 正确/错误信息
-    private Object data; // 数据
+    private Integer code; //编码：1成功，0为失败
+    private String msg; //错误信息
+    private Object data; //数据
 
     public static Result success() {
         Result result = new Result();
@@ -42,5 +39,4 @@ public class Result {
         result.code = 0;
         return result;
     }
-
 }
