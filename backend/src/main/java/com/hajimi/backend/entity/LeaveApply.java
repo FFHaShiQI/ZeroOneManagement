@@ -1,6 +1,8 @@
 package com.hajimi.backend.entity;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -11,10 +13,11 @@ public class LeaveApply {
     private String reason;
     private Integer type;
     private String image;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDate start;
+    private LocalDate end;
     private Integer status;
     private Integer seniorId;
     private String feedback;
+    @DateTimeFormat(pattern = "yyyy-MM-dd MM:mm:ss")
     private LocalDateTime createTime;
 }

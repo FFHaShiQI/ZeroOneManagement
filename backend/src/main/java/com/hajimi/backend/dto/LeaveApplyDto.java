@@ -21,11 +21,11 @@ public class LeaveApplyDto {
     /**
      * 状态
      */
-    private Long status;
+    private Integer status;
     /**
      * 请假类型
      */
-    private Long type;
+    private Integer type;
     /**
      * 页码
      */
