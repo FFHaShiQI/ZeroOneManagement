@@ -1,7 +1,9 @@
 package com.hajimi.backend.mapper;
 
 import com.hajimi.backend.entity.LeaveApply;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -14,25 +16,21 @@ import java.util.List;
  */
 @Mapper
 public interface LeaveMapper {
-
-    /**
-     * 根据编号查询请假记录
-     * @param id 请假记录编号
-     * @return 请假申请实体
-     */
-    //LeaveApply getById(Integer id);
-
     /**
      * 查询某学员的全部请假记录
      * @param memberId 学员id
      * @return 请假记录列表
      */
-    //List<LeaveApply> listByMemberId(Integer memberId);
+    @Select("select id,member_id,type,reason,image,start,end,status,senior_id,feedback,create_time " +
+            "from leaveapply where member_id = #{memberId}")
+    List<LeaveApply> listByMemberId(Integer memberId);
 
     /**
      * 新增请假申请（初始状态为审核中）
      * @param leaveApply 请假申请实体
      * @return 影响行数
      */
-    //int insert(LeaveApply leaveApply);
+    @Insert("insert into leaveapply(member_id,reason,type,image,start,end,status,create_time) " +
+            "values (#{memberId},#{reason},#{type},#{image},#{start},#{end},#{status},#{createTime})")
+    void insert(LeaveApply leaveApply);
 }

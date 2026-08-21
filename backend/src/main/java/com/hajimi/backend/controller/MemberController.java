@@ -6,9 +6,12 @@ import com.hajimi.backend.dto.MemberUpdateDto;
 import com.hajimi.backend.service.LeaveService;
 import com.hajimi.backend.service.MemberService;
 import com.hajimi.backend.vo.GroupVo;
+import com.hajimi.backend.vo.LeaveVo;
 import com.hajimi.backend.vo.MemberVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Auther: 与或非
@@ -67,7 +70,8 @@ public class MemberController {
      */
     @GetMapping("/leaveApply")
     public Result getLeaveList(@RequestParam Integer id) {
-        return null;
+        List<LeaveVo> leaveList = leaveService.listByMemberId(id);
+        return Result.success(leaveList);
     }
 
     /**
@@ -77,6 +81,7 @@ public class MemberController {
      */
     @PostMapping("/leaveApply")
     public Result applyLeave(@RequestBody LeaveApplyDto dto) {
-        return null;
+        leaveService.apply(dto);
+        return Result.success();
     }
 }

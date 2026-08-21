@@ -31,4 +31,6 @@ public interface MemberService {
      * @param groupId 修改组员请求体（id 必填）
      */
     GroupVo getGroup(Integer groupId);
+
+
 }
