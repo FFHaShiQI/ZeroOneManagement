@@ -12,6 +12,7 @@ export default defineConfig({
     }
   },
   server: {
+<<<<<<< HEAD
     port: 5173,
     proxy: {
       // 前端统一以 /api 前缀请求,代理到后端并去掉前缀
@@ -19,6 +20,14 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+=======
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        secure: false,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+>>>>>>> feature/member
       }
     }
   }

@@ -1,6 +1,7 @@
 package com.hajimi.backend.common;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import lombok.Data;
 /**
  *
@@ -10,6 +11,22 @@ import lombok.Data;
 @Data
 public class Result {
 
+=======
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @Auther: 与或非
+ * @Date: 2026/8/20 - 08 - 20
+ * @Description: com.hajimi.backend.common
+ * @version: 1.0
+ */
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
+public class Result {
+>>>>>>> feature/member
     private Integer code; //编码：1成功，0为失败
     private String msg; //错误信息
     private Object data; //数据
@@ -34,6 +51,7 @@ public class Result {
         result.msg = msg;
         result.code = 0;
         return result;
+<<<<<<< HEAD
 =======
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -59,5 +77,7 @@ public class Result<T> {
     public static <T> Result<T> error(String msg) {
         return new Result<>(0, msg,null);
 >>>>>>> feature/senior/leave-audit
+=======
+>>>>>>> feature/member
     }
 }

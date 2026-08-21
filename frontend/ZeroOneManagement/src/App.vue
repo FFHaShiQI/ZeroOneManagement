@@ -7,6 +7,7 @@ import { RouterView } from 'vue-router'
 </script>
 =======
 <script setup>
+<<<<<<< HEAD
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
@@ -102,5 +103,16 @@ const username = '学长'
 .layout-main {
   background-color: var(--el-fill-color-light);
 }
+=======
+
+</script>
+
+<template>
+    <div><RouterView /></div>
+</template>
+
+<style scoped>
+
+>>>>>>> feature/member
 </style>
 >>>>>>> feature/senior/team-manage
