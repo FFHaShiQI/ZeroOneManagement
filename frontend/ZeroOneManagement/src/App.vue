@@ -1,85 +1,97 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+
+const route = useRoute()
+const router = useRouter()
+
+// 学长操作界面菜单(原型图布局)
+const menus = [
+  { path: '/senior/members', title: '组员管理', ready: true },
+  { path: '/senior/groups', title: '小组管理', ready: true },
+  { path: '/senior/leaves', title: '请假审核', ready: true },
+  { path: '/senior/profile', title: '个人信息', ready: true },
+  { path: '/dashboard', title: '仪表盘', ready: true }
+]
+
+function handleMenuSelect(path) {
+  const menu = menus.find((m) => m.path === path)
+  if (!menu?.ready) {
+    ElMessage.info('该功能开发中')
+    return
+  }
+  router.push(path)
+}
+
+// TODO: 登录模块开发后替换为真实用户名
+const username = '学长'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <el-container class="layout">
+    <!-- 顶部栏 -->
+    <el-header class="layout-header">
+      <div class="layout-brand">零壹星 · 赋能驾驶舱</div>
+      <div class="layout-user">
+        <span>{{ username }}</span>
+        <el-button link type="primary" @click="handleUnready">退出登录</el-button>
+      </div>
+    </el-header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <el-container class="layout-body">
+      <!-- 左侧导航 -->
+      <el-aside width="200px" class="layout-aside">
+        <el-menu
+          :default-active="route.path"
+          class="layout-menu"
+          @select="handleMenuSelect"
+        >
+          <el-menu-item v-for="menu in menus" :key="menu.path" :index="menu.path">
+            {{ menu.title }}
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+      <!-- 主内容区 -->
+      <el-main class="layout-main">
+        <RouterView />
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.layout {
+  height: 100vh;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.layout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--el-border-color-light);
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.layout-brand {
+  font-size: 18px;
+  font-weight: 600;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.layout-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.layout-aside {
+  border-right: 1px solid var(--el-border-color-light);
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.layout-menu {
+  border-right: none;
 }
 
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.layout-main {
+  background-color: var(--el-fill-color-light);
 }
 </style>
