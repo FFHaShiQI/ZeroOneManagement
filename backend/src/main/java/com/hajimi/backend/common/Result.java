@@ -2,6 +2,7 @@ package com.hajimi.backend.common;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import lombok.Data;
 /**
  *
@@ -12,24 +13,38 @@ import lombok.Data;
 public class Result {
 
 =======
+=======
+>>>>>>> feature/senior/profile
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+<<<<<<< HEAD
  * @Auther: 与或非
  * @Date: 2026/8/20 - 08 - 20
+=======
+ * @Auther: jone
+ * @Date: 2026/8/19 - 08 - 19 - 16:26
+>>>>>>> feature/senior/profile
  * @Description: com.hajimi.backend.common
  * @version: 1.0
  */
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
+<<<<<<< HEAD
 public class Result {
 >>>>>>> feature/member
     private Integer code; //编码：1成功，0为失败
     private String msg; //错误信息
     private Object data; //数据
+=======
+public class Result<T> {
+    private Integer code; //编码：1成功，0为失败
+    private String msg; //错误信息
+    private T data; //数据
+>>>>>>> feature/senior/profile
 
     public static Result success() {
         Result result = new Result();
@@ -51,6 +66,7 @@ public class Result {
         result.msg = msg;
         result.code = 0;
         return result;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 import lombok.AllArgsConstructor;
@@ -79,5 +95,7 @@ public class Result<T> {
 >>>>>>> feature/senior/leave-audit
 =======
 >>>>>>> feature/member
+=======
+>>>>>>> feature/senior/profile
     }
 }
