@@ -11,23 +11,12 @@
       <form class="login-form" @submit.prevent="handleLogin">
         <div class="form-item">
           <label for="username">用户名</label>
-          <input
-            id="username"
-            v-model.trim="form.username"
-            type="text"
-            placeholder="请输入账号"
-            autocomplete="username"
-          />
+          <input id="username" v-model.trim="form.username" type="text" placeholder="请输入账号" autocomplete="username" />
         </div>
         <div class="form-item">
           <label for="password">密码</label>
-          <input
-            id="password"
-            v-model="form.password"
-            type="password"
-            placeholder="请输入密码"
-            autocomplete="current-password"
-          />
+          <input id="password" v-model="form.password" type="password" placeholder="请输入密码"
+            autocomplete="current-password" />
         </div>
 
         <!-- 学长登录勾选 -->
