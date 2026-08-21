@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * @Auther: jone
- * @Date: 2026/8/19 - 08 - 19
+ * @Auther: 与或非
+ * @Date: 2026/8/21 - 08 - 21
  * @Description: com.hajimi.backend.mapper
  * @version: 1.0
  * 请假申请表数据访问接口

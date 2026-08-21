@@ -5,8 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Auther: jone
- * @Date: 2026/8/19 - 08 - 19
+ * @Auther: 与或非
+ * @Date: 2026/8/20 - 08 - 20
  * @Description: com.hajimi.backend.vo
  * @version: 1.0
  * 分页结果通用类型

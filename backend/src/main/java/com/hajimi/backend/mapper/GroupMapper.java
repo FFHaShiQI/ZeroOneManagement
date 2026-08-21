@@ -5,8 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 /**
- * @Auther: jone
- * @Date: 2026/8/19 - 08 - 19
+ * @Auther: 与或非
+ * @Date: 2026/8/20 - 08 - 20
  * @Description: com.hajimi.backend.mapper
  * @version: 1.0
  * 小组表数据访问接口

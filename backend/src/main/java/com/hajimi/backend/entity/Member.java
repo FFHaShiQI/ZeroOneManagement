@@ -3,8 +3,8 @@ package com.hajimi.backend.entity;
 import lombok.Data;
 
 /**
- * @Auther: jone
- * @Date: 2026/8/19 - 08 - 19
+ * @Auther: 与或非
+ * @Date: 2026/8/20 - 08 - 20
  * @Description: com.hajimi.backend.entity
  * @version: 1.0
  * 组员实体，对应数据库表 Member
