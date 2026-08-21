@@ -12,11 +12,28 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    // 开发环境代理：前端请求 /login 等路径，转发到后端 Spring Boot（默认 8080）
-    // 后端地址以土豆雷实际启动端口为准，改这里即可，前端代码不用动
     proxy: {
-      '/login': { target: 'http://localhost:8080', changeOrigin: true },
-      '/register': { target: 'http://localhost:8080', changeOrigin: true },
+      // 前端路由（/login /register）与后端接口路径相同，
+      // 用 bypass 区分：浏览器打开页面（Accept: text/html）→ 返回前端页面；
+      // axios 发起的 API 请求 → 转发后端。后端地址以土豆雷实际端口为准。
+      '/login': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.headers.accept?.includes('text/html')) {
+            return '/index.html'
+          }
+        }
+      },
+      '/register': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.headers.accept?.includes('text/html')) {
+            return '/index.html'
+          }
+        }
+      },
       '/me': { target: 'http://localhost:8080', changeOrigin: true },
       '/upload': { target: 'http://localhost:8080', changeOrigin: true }
     }

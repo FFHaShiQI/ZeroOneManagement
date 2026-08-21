@@ -53,7 +53,7 @@
       <!-- 没有账号 → 注册 -->
       <div class="form-footer">
         <span>没有账号？</span>
-        <RouterLink to="/register">立即注册</RouterLink>
+        <RouterLink to="/Register">立即注册</RouterLink>
       </div>
     </div>
   </div>
