@@ -6,8 +6,12 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+/**
+ * 学长小组数据库操作接口
+ * 提供对学长小组的增删改查操作
+ * @author Hajimi 蓝宝827
+ */
 @Mapper
-
 public interface SeniorGroupMapper {
 
     void insert(Group group);
@@ -17,4 +21,6 @@ public interface SeniorGroupMapper {
     void deleteById(List<Integer> groupIds);
 
     List<Group> select(GroupQueryDto groupQueryDto);
+
+    Integer selectMemberById(List<Integer> groupIds);
 }

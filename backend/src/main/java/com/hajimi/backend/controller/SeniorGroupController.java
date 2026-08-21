@@ -17,8 +17,10 @@ import java.util.List;
 @Slf4j
 
 
-/**
- * 蓝宝827
+/*
+  学长小组控制器
+  提供对学长小组的增删改查操作
+  @author Hajimi 蓝宝827
  */
 public class SeniorGroupController {
 
@@ -26,8 +28,9 @@ public class SeniorGroupController {
     private SeniorGroupService seniorGroupService;
 
     /**
-     * 条件分页查询
-     * @return
+     * 条件分页查询小组
+     * @param groupQueryDto 查询参数
+     * @return  分页查询结果对象
      */
     @GetMapping
     public  Result pageQuery(GroupQueryDto groupQueryDto){
@@ -36,10 +39,10 @@ public class SeniorGroupController {
         return Result.success(groupPageResult);
     }
 
-
     /**
      * 添加小组
-     * @return
+     * @param group 小组信息
+     * @return  null
      */
     @PostMapping
     public  Result addGroup(@RequestBody Group group){
@@ -50,7 +53,8 @@ public class SeniorGroupController {
 
     /**
      * 修改小组
-     * @return
+     * @param group 小组信息
+     * @return  null
      */
     @PutMapping
     public  Result updateGroup(@RequestBody Group group){
@@ -61,7 +65,8 @@ public class SeniorGroupController {
 
     /**
      * 删除小组
-     * @return
+     * @param groupIds 小组id列表
+     * @return  null
      */
     @DeleteMapping
     public  Result deleteGroup(@RequestParam List<Integer> groupIds){
