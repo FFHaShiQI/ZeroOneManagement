@@ -5,29 +5,51 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/login' },
+    // ===== 登录 / 注册（登录模块）=====
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/Login.vue'),
+      component: () => import('@/views/login/Login.vue'),
       meta: { title: '登录' }
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import('@/views/Register.vue'),
+      component: () => import('@/views/login/Register.vue'),
       meta: { title: '注册' }
     },
+    // ===== 组员操作界面（feature/member）=====
     {
       path: '/member',
       name: 'member',
-      component: () => import('@/views/MemberHomeView.vue'),
-      meta: { title: '组员操作界面', requiresAuth: true }
+      component: () => import('@/views/layout/MemberIndex.vue'),
+      meta: { title: '组员操作界面', requiresAuth: true },
+      children: [
+        { path: '', redirect: '/member/memberSelfInfo' },
+        { path: 'memberSelfInfo', name: 'memberSelfInfo', component: () => import('@/views/member/MemberSelfInfoView.vue') }
+        // TODO: groupInfo / leaveApply 视图待 feature/member 分支合并后补充
+      ]
     },
+    // ===== 学长操作界面（feature/senior/*）=====
     {
       path: '/senior',
       name: 'senior',
-      component: () => import('@/views/SeniorHomeView.vue'),
-      meta: { title: '学长操作界面', requiresAuth: true }
+      component: () => import('@/views/layout/SeniorIndex.vue'),
+      meta: { title: '学长操作界面', requiresAuth: true },
+      children: [
+        { path: '', redirect: '/senior/groupManage' },
+        { path: 'groupManage', name: 'senior-group-manage', component: () => import('@/views/senior/GroupManage.vue') },
+        { path: 'leavesManage', name: 'senior-leaves-manage', component: () => import('@/views/senior/LeaveAudit.vue') },
+        { path: 'seniorSelfInfo', name: 'senior-self-info', component: () => import('@/views/senior/Profile.vue') }
+        // TODO: membersManage 视图待 feature/senior/member-manage 分支合并后补充
+      ]
+    },
+    // ===== 仪表盘（附加功能）=====
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('@/views/Dashboard.vue'),
+      meta: { title: '仪表盘', requiresAuth: true }
     },
     // 兜底：未匹配的路由回登录页
     { path: '/:pathMatch(.*)*', redirect: '/login' }

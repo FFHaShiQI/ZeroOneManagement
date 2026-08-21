@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { clearAuth } from '@/utils/auth'
+
+const router = useRouter()
 // 用户名
 const name = ref('土豆雷')
 // 小组信息弹窗是否显示
@@ -20,6 +24,12 @@ const groupMembers = ref([
 // 显示小组信息弹窗
 const showGroupInfo = () => {
   dialogTableVisible.value = true
+}
+
+// 退出登录
+const logout = () => {
+  clearAuth()
+  router.replace('/login')
 }
 
 </script>

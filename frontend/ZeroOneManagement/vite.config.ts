@@ -35,7 +35,9 @@ export default defineConfig({
         }
       },
       '/me': { target: 'http://localhost:8080', changeOrigin: true },
-      '/upload': { target: 'http://localhost:8080', changeOrigin: true }
+      '/upload': { target: 'http://localhost:8080', changeOrigin: true },
+      // 其他模块（utils/request.js baseURL=/api，接口如 /api/senior/groups）
+      '/api': { target: 'http://localhost:8080', changeOrigin: true }
     }
   }
 })

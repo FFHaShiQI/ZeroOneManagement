@@ -5,7 +5,7 @@ import { BarChart, PieChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { pageQueryGroups } from '../api/group'
-import { pageQueryMembers } from '../api/member'
+import { pageQueryMembers } from '../api/member/member'
 import { pageQueryLeaves } from '../api/leave'
 
 use([BarChart, PieChart, GridComponent, TooltipComponent, LegendComponent, CanvasRenderer])
