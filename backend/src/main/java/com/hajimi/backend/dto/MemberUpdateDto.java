@@ -19,4 +19,5 @@ public class MemberUpdateDto {
     private String image;       //头像（链接）
     private String number;      //联系方式
     private String selfIntro;   //自我介绍
+    private Integer pos;        //职位
 }

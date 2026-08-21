@@ -14,9 +14,16 @@
             <if test="age != null">age = #{age},</if>
             <if test="image != null and image != ''">image = #{image},</if>
             <if test="selfIntro != null">self_intro = #{selfIntro},</if>
-            <if test="number != null and number != ''">number = #{number}</if>
+            <if test="number != null and number != ''">number = #{number},</if>
+            <if test="pos != null">pos = #{pos}</if>
         </set>
         where id = #{id}
     </update>
+
+    <!--根据id查询单个组员的信息-->
+    <select id="getById" resultType="com.hajimi.backend.vo.MemberVo">
+        select m.*, g.name groupName from member m left join `group` g on m.group_id = g.id
+        where m.id = #{id}
+    </select>
 
 </mapper>

@@ -23,9 +23,7 @@ public interface MemberMapper {
      * @param id 组员编号
      * @return 组员实体
      */
-    @Select("select id,name,group_id,gender,age,image,self_intro,number,pos " +
-            "from member where id = #{id}")
-    Member getById(Integer id);
+    MemberVo getById(Integer id);
 
     /**
      * 修改组员信息

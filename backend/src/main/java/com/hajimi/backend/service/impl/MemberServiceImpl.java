@@ -32,13 +32,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberVo getById(Integer id) {
-        Member m = memberMapper.getById(id);
-        if (m == null){
-            return null;
-        }
-        MemberVo mv = new MemberVo();
-        BeanUtils.copyProperties(m, mv);
-        return mv;
+        return memberMapper.getById(id);
     }
 
     @Override
