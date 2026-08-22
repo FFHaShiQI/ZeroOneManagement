@@ -1,4 +1,4 @@
-import { post } from './request'
+import { post } from '@/utils/request'
 
 // ===== 登录 / 注册接口 =====
 
