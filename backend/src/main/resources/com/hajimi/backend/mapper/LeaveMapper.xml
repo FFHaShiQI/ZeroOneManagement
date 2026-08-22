@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hajimi.backend.mapper.LeaveMapper">
+
+    <!--查询某学员的全部请假记录-->
+    <select id="listByMemberId" resultType="com.hajimi.backend.vo.LeaveVo">
+        select l.*, s.name seniorName from leaveapply l left join senior s on l.senior_id = s.id
+        where l.member_id = #{memberId}
+    </select>
+
+</mapper>

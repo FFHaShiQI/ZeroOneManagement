@@ -21,11 +21,11 @@ public class LeaveVo {
     private String reason;      //请假理由
     private String image;       //佐证图片（如病例、伤口图片等）
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate start;       //请假开始时间
+    private LocalDate start;    //请假开始时间
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate end;         //请假结束时间
+    private LocalDate end;      //请假结束时间
     private Integer status;     //审核状态：0审核中1通过2驳回
-    private Integer seniorId;   //审核者id（只有学长可以审核）
+    private String seniorName;  //审核者昵称（只有学长可以审核）
     private String feedback;    //审核意见
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;  //请假记录创建时间
