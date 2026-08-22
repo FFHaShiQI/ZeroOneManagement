@@ -56,13 +56,13 @@ const router = createRouter({
   ]
 })
 
-// 全局前置守卫：登录控制
+// 全局前置守卫：登录控制（临时关闭：注释了登录拦截，便于单独查看各页面样式）
 router.beforeEach((to) => {
   document.title = to.meta.title ? `${to.meta.title} - 零壹星 · 赋能驾驶舱` : '零壹星 · 赋能驾驶舱'
 
   const token = getToken()
 
-  // 需要登录的页面，未登录 → 回登录页
+  //  需要登录的页面，未登录 → 回登录页
   if (to.meta.requiresAuth && !token) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
