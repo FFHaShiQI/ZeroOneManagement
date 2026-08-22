@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request'
 
 export const getMemberInfo = async(id) => {
    return await request.get("/member?id=" + id)
