@@ -1,65 +1,80 @@
 <script setup>
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getMemberInfo } from '@/api/member/member'
+import { getMemberInfo, updateMemberInfo } from '@/api/member/member'
 import { uploadFile } from '@/api/upload/upload'
 
-// 模拟数据库返回的用户数据
 const userInfo = ref({
-    name: '',
-    username: '', // 用户名
-    password: '',
-    groupName: '',
-    gender: '',
-    age: '',
-    image: '',
-    selfIntro: '',
-    number: '',
-    pos: '',  
+    name: '', username: '', password: '', groupName: '', gender: '', age: '',
+    image: '', selfIntro: '', number: '', pos: '',  
 })
-// 编辑表单数据
-const editForm = ref({
-})
-// 绑挂载时获取用户信息
-onMounted( async () => {
-    // 从数据库获取用户信息
+const editForm = ref({})
+
+onMounted(async () => {
     const result = await getMemberInfo(localStorage.getItem('id'))
     if (result.code === 1) {
         userInfo.value = result.data
     }
 })
 
-// 下拉框数据
-const genderOptions = [
-    { value: 1, label: '男' },
-    { value: 2, label: '女' }
-]
-//  职位下拉框数据
-const posOptions = [
-    { value: 1, label: '组长' },
-    { value: 2, label: '副组长' },
-    { value: 3, label: '产品经理' },
-    { value: 4, label: '信息官' },  
-    { value: 5, label: '技术官' },
-    { value: 6, label: '监督管' }
-]
+const genderOptions = [ { value: 1, label: '男' }, { value: 2, label: '女' } ]
+const posOptions = [ { value: 1, label: '组长' }, { value: 2, label: '副组长' }, { value: 3, label: '产品经理' }, { value: 4, label: '信息官' }, { value: 5, label: '技术官' }, { value: 6, label: '监督管' } ]
 
-// 编辑弹窗相关
 const dialogVisible = ref(false)
-// 打开弹窗并回显数据
+
 const handleEdit = () => {
-    editForm.value = { ...userInfo.value } 
+    editForm.value = { ...userInfo.value }
     dialogVisible.value = true
 }
-// 提交保存
-const handleSave = () => {
-    Object.assign(userInfo.value, editForm.value)
-    dialogVisible.value = false
-    ElMessage.success('个人信息修改成功！')
+
+// 修改：上传成功直接赋值整个字符串
+const handleAvatarChange = async (uploadFileObj) => {
+    const file = uploadFileObj.raw
+    if (file) {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const uploadRes = await uploadFile(formData)
+        if (uploadRes.code === 1) {
+            // 修改点：因为返回的data就是URL字符串，所以直接取 data，不要取 data.url
+            editForm.value.image = uploadRes.data 
+            ElMessage.success('头像上传成功')
+        } else {
+            ElMessage.error('头像上传失败')
+        }
+    }
 }
-//  选择新头像后本地预览
-const handleAvatarChange = (uploadFile) => {
-    console.log(uploadFile)
+
+// 修改：保存后重新查询接口
+const handleSave = async () => {
+    // 1. 组装参数（参考你截图的接口文档）
+    const payload = {
+        id: editForm.value.id,
+        name: editForm.value.name,
+        password: editForm.value.password,
+        gender: editForm.value.gender,
+        age: editForm.value.age,
+        image: editForm.value.image,
+        selfIntro: editForm.value.selfIntro,
+        number: editForm.value.number,
+        pos: editForm.value.pos
+    }
+
+    // 2. 发送修改请求
+    const result = await updateMemberInfo(payload)
+    
+    if (result.code === 1) {
+        // 3. 用户说得对：修改成功后，重新调用查询接口，保证页面数据的绝对准确！
+        const freshData = await getMemberInfo(localStorage.getItem('id'))
+        if (freshData.code === 1) {
+            userInfo.value = freshData.data
+        }
+
+        dialogVisible.value = false
+        ElMessage.success('个人信息修改成功！')
+    } else {
+        ElMessage.error(result.msg || '保存失败，请重试')
+    }
 }
 </script>
 
@@ -84,18 +99,30 @@ const handleAvatarChange = (uploadFile) => {
                 <div class="info-row">
                     <span class="label">昵称：</span>
                     <span class="value">{{ userInfo.name }}</span>
-                </div>
+            </div>
                 <div class="info-row">
                     <span class="label">性别：</span>
-                    <span class="value">{{ userInfo.gender }}</span>
+                    <span class="value">
+                        <span v-if="userInfo.gender === 1">男</span>
+                        <span v-else-if="userInfo.gender === 2">女</span>
+                        <span v-else>{{ userInfo.gender }}</span>
+                    </span>
                 </div>
                 <div class="info-row">
                     <span class="label">年龄：</span>
                     <span class="value">{{ userInfo.age }}</span>
                 </div>
-                <div class="info-row">
+               <div class="info-row">
                     <span class="label">职位：</span>
-                    <span class="value">{{ userInfo.pos }}</span>
+                    <span class="value">
+                        <span v-if="userInfo.pos === 1">组长</span>
+                        <span v-else-if="userInfo.pos === 2">副组长</span>
+                        <span v-else-if="userInfo.pos === 3">产品经理</span>
+                        <span v-else-if="userInfo.pos === 4">信息官</span>
+                        <span v-else-if="userInfo.pos === 5">技术官</span>
+                        <span v-else-if="userInfo.pos === 6">监督官</span>
+                        <span v-else>{{ userInfo.pos }}</span>
+                    </span>
                 </div>
                 <div class="info-row">
                     <span class="label">小组：</span>
@@ -126,12 +153,12 @@ const handleAvatarChange = (uploadFile) => {
             <div class="edit-dialog-content">
 
                 <!-- 左侧：头像上传 -->
-                <div class="left-avatar-area">
-                   <el-upload class="avatar-uploader" action="#" :show-file-list="false" :auto-upload="false"
+               <div class="left-avatar-area">
+                    <el-upload class="avatar-uploader" action="#" :show-file-list="false" :auto-upload="false"
                         :on-change="handleAvatarChange">
                         <div class="avatar-circle-upload">
                             <!-- 核心：判断 editForm.image 是否有值，有值显示图片，没值显示文字 -->
-                            <img v-if="editForm.image" :src="editForm.image" class="avatar-upload-img" />
+                           <img v-if="editForm.image" :src="editForm.image" class="avatar-upload-img" />
                             <span v-else>上传头像</span>
                         </div>
                     </el-upload>
@@ -191,7 +218,7 @@ const handleAvatarChange = (uploadFile) => {
                         </el-row>
 
                         <!-- 底部：自我介绍填写 -->
-                        <el-form-item label="自我介绍填写">
+                        <el-form-item label="自我介绍">
                             <el-input v-model="editForm.selfIntro" type="textarea" :rows="7" resize="none"
                                 placeholder="(自我介绍填写)" />
                         </el-form-item>
