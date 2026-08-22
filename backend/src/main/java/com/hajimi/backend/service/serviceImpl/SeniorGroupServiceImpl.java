@@ -7,6 +7,7 @@ import com.hajimi.backend.entity.Group;
 import com.hajimi.backend.exception.DatabaseDeletionException;
 import com.hajimi.backend.mapper.SeniorGroupMapper;
 import com.hajimi.backend.service.SeniorGroupService;
+import com.hajimi.backend.vo.GroupIdName;
 import com.hajimi.backend.vo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,7 @@ public class SeniorGroupServiceImpl implements SeniorGroupService {
     }
 
     @Override
-    public List<Group> getAll() {
+    public List<GroupIdName> getAll() {
 
         return seniorGroupMapper.selectAll();
     }

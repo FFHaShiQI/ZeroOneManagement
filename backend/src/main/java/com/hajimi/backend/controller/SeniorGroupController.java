@@ -5,6 +5,7 @@ import com.hajimi.backend.common.Result;
 import com.hajimi.backend.dto.GroupQueryDto;
 import com.hajimi.backend.entity.Group;
 import com.hajimi.backend.service.SeniorGroupService;
+import com.hajimi.backend.vo.GroupIdName;
 import com.hajimi.backend.vo.PageResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ public class SeniorGroupController {
     @GetMapping("/All")
     public  Result getAll(){
         log.info("查询所有小组");
-        List<Group> groupList = seniorGroupService.getAll();
+        List<GroupIdName> groupList = seniorGroupService.getAll();
         return Result.success(groupList);
     }
 
