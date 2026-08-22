@@ -43,9 +43,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public GroupVo getGroup(Integer groupId) {
         List<MemberVo> members = memberMapper.getByGroupId(groupId);
-        Group g = groupMapper.getById(groupId);
-        GroupVo gv = new GroupVo();
-        BeanUtils.copyProperties(g, gv);
+        GroupVo gv = groupMapper.getById(groupId);
         gv.setMembers(members);
         return gv;
     }

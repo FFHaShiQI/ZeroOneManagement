@@ -28,14 +28,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Override
     public List<LeaveVo> listByMemberId(Integer id) {
-        List<LeaveApply> list = leaveMapper.listByMemberId(id);
-        List<LeaveVo> leaveList = new ArrayList<>();
-        for (LeaveApply leaveApply : list) {
-            LeaveVo lv = new LeaveVo();
-            BeanUtils.copyProperties(leaveApply, lv);
-            leaveList.add(lv);
-        }
-        return leaveList;
+        return leaveMapper.listByMemberId(id);
     }
 
     @Override
