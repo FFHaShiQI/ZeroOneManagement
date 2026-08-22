@@ -1,6 +1,7 @@
 package com.hajimi.backend.mapper;
 
 import com.hajimi.backend.entity.Group;
+import com.hajimi.backend.vo.GroupVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -19,7 +20,5 @@ public interface GroupMapper {
      * @param id 小组编号
      * @return 小组实体
      */
-    @Select("select id,name,language,clock_link,group_size,senior_id " +
-            "from `group` where id = #{id}")
-    Group getById(Integer id);
+    GroupVo getById(Integer id);
 }

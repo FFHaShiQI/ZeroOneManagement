@@ -32,5 +32,4 @@ public interface MemberService {
      */
     GroupVo getGroup(Integer groupId);
 
-
 }
