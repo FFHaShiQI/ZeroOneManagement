@@ -1,4 +1,4 @@
-import request from '@/api/request'
+import request from '@/utils/request'
 
 // 获取个人信息接口
 export const getMemberInfo = async(id) => {

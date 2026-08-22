@@ -60,7 +60,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { apiRegister } from '@/api/auth'
+import { apiRegister } from '@/api/utils/auth'
 
 const router = useRouter()
 
