@@ -74,4 +74,11 @@ public class SeniorGroupController {
         seniorGroupService.deleteById(groupIds);
         return  Result.success();
     }
+    @GetMapping("/All")
+    public  Result getAll(){
+        log.info("查询所有小组");
+        List<Group> groupList = seniorGroupService.getAll();
+        return Result.success(groupList);
+    }
+
 }

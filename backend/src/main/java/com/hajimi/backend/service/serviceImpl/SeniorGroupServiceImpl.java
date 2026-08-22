@@ -68,4 +68,10 @@ public class SeniorGroupServiceImpl implements SeniorGroupService {
             seniorGroupMapper.deleteById(groupIds);//删除小组
         }
     }
+
+    @Override
+    public List<Group> getAll() {
+
+        return seniorGroupMapper.selectAll();
+    }
 }

@@ -3,6 +3,7 @@ package com.hajimi.backend.mapper;
 import com.hajimi.backend.dto.GroupQueryDto;
 import com.hajimi.backend.entity.Group;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -23,4 +24,7 @@ public interface SeniorGroupMapper {
     List<Group> select(GroupQueryDto groupQueryDto);
 
     Integer selectMemberById(List<Integer> groupIds);
+
+    @Select("select * from `group`")
+    List<Group> selectAll();
 }

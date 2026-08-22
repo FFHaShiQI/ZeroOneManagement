@@ -36,4 +36,6 @@ public interface SeniorGroupService {
      * @param groupIds 小组id列表
      */
     void deleteById(List<Integer> groupIds);
+
+    List<Group> getAll();
 }
