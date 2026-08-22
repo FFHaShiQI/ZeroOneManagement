@@ -16,13 +16,4 @@ request.interceptors.response.use(
   }
 )
 
-// 封装 post/get，供登录注册等接口使用
-export function post(url, data) {
-  return request.post(url, data)
-}
-
-export function get(url, params) {
-  return request.get(url, { params })
-}
-
 export default request

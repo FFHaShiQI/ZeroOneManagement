@@ -51,7 +51,8 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { apiLogin, setAuth } from '@/api/auth'
+import { apiLogin } from '@/api/utils/auth'
+import { setAuth } from '@/utils/auth'
 
 const router = useRouter()
 
