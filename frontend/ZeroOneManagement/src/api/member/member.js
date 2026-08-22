@@ -11,3 +11,12 @@ export const updateMemberInfo = async(data) => {
 export const getGroupInfo = async(groupId) => {
    return await request.get("/member/group?groupId=" + groupId)
 }
+// 查询个人请假列表
+export const getLeaveList = async(id) => {
+   return await request.get("/member/leaveApply?id=" + id)
+}
+
+// 提交请假申请
+export const addLeaveApply = async(data) => {
+   return await request.post("/member/leaveApply", data)
+}

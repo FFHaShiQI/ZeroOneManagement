@@ -64,7 +64,7 @@ const handleSave = async () => {
     const result = await updateMemberInfo(payload)
     
     if (result.code === 1) {
-        // 3. 用户说得对：修改成功后，重新调用查询接口，保证页面数据的绝对准确！
+        // 3. 修改成功后，重新调用查询接口，保证页面数据的绝对准确！
         const freshData = await getMemberInfo(localStorage.getItem('id'))
         if (freshData.code === 1) {
             userInfo.value = freshData.data
