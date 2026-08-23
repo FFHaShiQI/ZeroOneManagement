@@ -1,14 +1,18 @@
 package com.hajimi.backend.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-/**
- *
- * @param
- * @return
- */
-@Data
-public class Result {
+import lombok.NoArgsConstructor;
 
+/**
+ *  W
+ *  com.hajimi.backend.common
+ *  1.0
+ */
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
+public class Result<T> {
     private Integer code; //编码：1成功，0为失败
     private String msg; //错误信息
     private Object data; //数据

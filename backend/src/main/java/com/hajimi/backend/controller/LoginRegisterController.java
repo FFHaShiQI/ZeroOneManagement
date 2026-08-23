@@ -1,9 +1,11 @@
-package com.hajimi.backend.controller.impl;
+package com.hajimi.backend.controller;
 
-import com.hajimi.backend.DTO.LoginDTO;
-import com.hajimi.backend.VO.LoginVO;
+import com.hajimi.backend.dto.LoginDto;
+import com.hajimi.backend.dto.RegisterDto;
+import com.hajimi.backend.vo.LoginVo;
 import com.hajimi.backend.common.Result;
 import com.hajimi.backend.service.LoginService;
+import com.hajimi.backend.service.RegisterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @Slf4j
-public class LoginController {
+public class LoginRegisterController {
     /**
      * W
      * 登录功能
@@ -22,14 +24,22 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private RegisterService registerService;
 
 
     @PostMapping("/login")
-    public Result login(@RequestBody LoginDTO loginDTO){
-        LoginVO loginVO = loginService.login(loginDTO);
+    public Result<LoginVo> login(@RequestBody LoginDto loginDTO){
+        LoginVo loginVO = loginService.login(loginDTO);
         if(loginVO == null){
             return Result.error("账号或密码错误");
         }
         return Result.success(loginVO);
+    }
+
+    @PostMapping("/register")
+    public Result<Void> register(@RequestBody RegisterDto registerDTO) {
+        registerService.register(registerDTO);
+        return Result.success();
     }
 }

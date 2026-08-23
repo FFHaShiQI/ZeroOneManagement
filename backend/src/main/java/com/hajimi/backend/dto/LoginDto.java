@@ -1,9 +1,9 @@
-package com.hajimi.backend.DTO;
+package com.hajimi.backend.dto;
 
 import lombok.Data;
 
 @Data
-public class LoginDTO {
+public class LoginDto {
     /**
      * W
      * 输入用户名密码，选择类型

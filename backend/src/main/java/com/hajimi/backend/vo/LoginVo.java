@@ -1,14 +1,14 @@
-package com.hajimi.backend.VO;
+package com.hajimi.backend.vo;
 
 import lombok.Data;
 
 @Data
-public class LoginVO {
+public class LoginVo {
     /**
      * W
      * 登录的所有信息的封装
      */
     private String token;
     private String role;
-    private UserInfoVO userInfo;
+    private UserInfoVo userInfo;
 }

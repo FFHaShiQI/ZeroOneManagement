@@ -1,9 +1,9 @@
 package com.hajimi.backend.service.impl;
 
-import com.hajimi.backend.DTO.LoginDTO;
+import com.hajimi.backend.dto.LoginDto;
 import com.hajimi.backend.Utils.JwtUtils;
-import com.hajimi.backend.VO.LoginVO;
-import com.hajimi.backend.VO.UserInfoVO;
+import com.hajimi.backend.vo.LoginVo;
+import com.hajimi.backend.vo.UserInfoVo;
 import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
@@ -26,7 +26,7 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private SeniorMapper seniorMapper;
 
-    public LoginVO login(LoginDTO dto) {
+    public LoginVo login(LoginDto dto) {
         String username = dto.getUsername();
         String password = dto.getPassword();
         String reqRole = dto.getRole();
@@ -36,7 +36,7 @@ public class LoginServiceImpl implements LoginService {
             if (member == null) {
                 return null;
             }
-            LoginVO vo = new LoginVO();
+            LoginVo vo = new LoginVo();
             vo.setRole("member");
 
             Map<String, Object> claims = new HashMap<>();
@@ -45,7 +45,7 @@ public class LoginServiceImpl implements LoginService {
             claims.put("role", "member");
             vo.setToken(JwtUtils.generateJwt(claims));
 
-            UserInfoVO userInfo = new UserInfoVO();
+            UserInfoVo userInfo = new UserInfoVo();
             userInfo.setId(member.getId());
             userInfo.setUsername(member.getUsername());
             userInfo.setNickname(member.getName());
@@ -59,7 +59,7 @@ public class LoginServiceImpl implements LoginService {
             if (senior == null) {
                 return null;
             }
-            LoginVO vo = new LoginVO();
+            LoginVo vo = new LoginVo();
             vo.setRole("senior");
 
             Map<String, Object> claims = new HashMap<>();
@@ -68,7 +68,7 @@ public class LoginServiceImpl implements LoginService {
             claims.put("role", "senior");
             vo.setToken(JwtUtils.generateJwt(claims));
 
-            UserInfoVO userInfo = new UserInfoVO();
+            UserInfoVo userInfo = new UserInfoVo();
             userInfo.setId(senior.getId());
             userInfo.setUsername(senior.getUsername());
             userInfo.setNickname(senior.getName());
