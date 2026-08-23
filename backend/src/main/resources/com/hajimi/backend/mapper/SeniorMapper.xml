@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hajimi.backend.mapper.SeniorMapper">
 
+    <!--学长的-->
     <select id="getByUsername" resultType="com.hajimi.backend.entity.Senior">
         select id,username,password,name,image
         from senior
