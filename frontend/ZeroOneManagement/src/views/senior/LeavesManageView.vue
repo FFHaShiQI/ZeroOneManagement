@@ -79,6 +79,11 @@ function handleSizeChange(size) {
   loadList()
 }
 
+function handleCurrentChange(page) {
+  queryParams.page = page
+  loadList()
+}
+
 // ---------- 审批弹窗 ----------
 const auditVisible = ref(false)
 const auditFormRef = ref(null)
@@ -257,6 +262,7 @@ onMounted(loadList)
           :page-sizes="[5, 10, 20]"
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
         />
       </div>
     </el-card>

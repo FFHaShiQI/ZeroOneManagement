@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class SeniorVo {
+    private Integer id;         //学长编号
     private String name;        //昵称
     private Integer type;       //大小学长：1大学长2小学长
     private String username;    //用户名

@@ -7,6 +7,7 @@
     <!--分页模糊查询请假记录 联表-->
     <select id="fuzzySelect" resultType="com.hajimi.backend.vo.LeaveApplyVo">
         SELECT
+        la.id,
         m.name AS member_name,
         g.name AS group_name,
         la.type,

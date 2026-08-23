@@ -23,7 +23,7 @@ public interface SeniorMapper {
      * @param id 学长编号
      * @return 学长实体
      */
-    @Select("select name, type, username, password, number, image from senior where id = #{id}")
+    @Select("select id, name, type, username, password, number, image from senior where id = #{id}")
     SeniorVo selectById(Integer id);
 
     /**

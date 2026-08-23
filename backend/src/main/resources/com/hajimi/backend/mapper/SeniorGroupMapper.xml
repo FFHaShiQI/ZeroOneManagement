@@ -29,9 +29,9 @@
     <!-- 条件分页查询小组 -->
     <select id="select" resultType="com.hajimi.backend.entity.Group">
         select g.* from `group` g left join senior s on g.senior_id = s.id <where>
-        <if test="groupName!=null">g.name like CONCAT('%', #{groupName}, '%')</if>
+        <if test="groupName!=null and groupName!=''">g.name like CONCAT('%', #{groupName}, '%')</if>
         <if test="groupType!=null">and g.language=#{groupType}</if>
-        <if test="senior!=null">and s.name like CONCAT('%', #{senior}, '%')</if>
+        <if test="senior!=null and senior!=''">and s.name like CONCAT('%', #{senior}, '%')</if>
     </where>
     </select>
 
