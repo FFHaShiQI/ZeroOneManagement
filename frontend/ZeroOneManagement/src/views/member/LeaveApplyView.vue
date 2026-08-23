@@ -12,7 +12,6 @@ const typeMap = { 0: '病假', 1: '事假', 2: '其它' }
 // 审批状态映射 (0待审核，1审核通过，2审核不通过)
 const statusMap = { 0: '待审核', 1: '审核通过', 2: '审核不通过' }
 
-// 🔴 新增：安全获取当前登录用户的ID（优先从完整的 userData 对象中获取，兼容旧数据）
 const getUserId = () => {
     const userDataStr = localStorage.getItem('userData')
     const userData = userDataStr ? JSON.parse(userDataStr) : null
@@ -25,7 +24,7 @@ const isSubmitting = ref(false)
 
 // 申请表单
 const form = ref({
-    memberId: getUserId(), // 🔴 修改点1：初始值改为调用 getUserId()
+    memberId: getUserId(), 
     type: 0,
     reason: '',
     image: '',
@@ -35,7 +34,7 @@ const form = ref({
 
 // 查询列表
 const fetchLeaveList = async () => {
-    const id = getUserId() // 🔴 修改点2：获取 ID 改为调用 getUserId()
+    const id = getUserId() 
     if (!id) return
     
     const result = await getLeaveList(id)
@@ -52,7 +51,7 @@ onMounted(() => {
 // 打开申请弹窗并重置表单
 const handleOpenDialog = () => {
     form.value = {
-        memberId: getUserId(), // 🔴 修改点3：重置时获取 ID 改为调用 getUserId()
+        memberId: getUserId(), 
         type: 0,
         reason: '',
         image: '',
