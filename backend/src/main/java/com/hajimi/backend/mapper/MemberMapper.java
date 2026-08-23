@@ -43,14 +43,11 @@ public interface MemberMapper {
     List<MemberVo> getByGroupId(Integer groupId);
 
     /**
-     * 登录:按用户名和密码查询组员
+     * 登录:按用户名查询组员(密码为 BCrypt 密文,由服务层校验)
      * @param username 用户名
-     * @param password 密码
      * @return 组员实体
      */
-    @Select("select id, username, password, name, group_id, gender, age, image, self_intro, number, pos " +
-            "from member where username = #{username} and password = #{password}")
-    Member getByUsernameAndPwd(String username, String password);
+    Member getByUsername(String username);
 
     /**
      * 统计同名用户名数量(注册查重)

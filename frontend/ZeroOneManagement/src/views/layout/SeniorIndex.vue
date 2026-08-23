@@ -1,6 +1,5 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { clearAuth } from '@/utils/auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,7 +18,13 @@ function handleMenuSelect(path) {
 }
 
 function handleLogout() {
-  clearAuth()
+  localStorage.removeItem('userData')
+  localStorage.removeItem('token')
+  localStorage.removeItem('role')
+  localStorage.removeItem('id')
+  localStorage.removeItem('groupId')
+  localStorage.removeItem('nickname')
+  localStorage.removeItem('avatar')
   router.replace('/login')
 }
 

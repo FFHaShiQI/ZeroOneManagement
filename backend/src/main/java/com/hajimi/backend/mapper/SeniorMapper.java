@@ -34,14 +34,11 @@ public interface SeniorMapper {
     void updateById(SeniorUpdateDto dto);
 
     /**
-     * 登录:按用户名和密码查询学长
+     * 登录:按用户名查询学长(密码为 BCrypt 密文,由服务层校验)
      * @param username 用户名
-     * @param password 密码
      * @return 学长实体
      */
-    @Select("select id, name, type, username, password, number, image " +
-            "from senior where username = #{username} and password = #{password}")
-    Senior getByUsernameAndPwd(String username, String password);
+    Senior getByUsername(String username);
 
     /**
      * 统计同名用户名数量(注册查重)

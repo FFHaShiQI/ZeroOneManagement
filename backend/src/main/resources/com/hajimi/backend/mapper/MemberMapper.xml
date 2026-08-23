@@ -26,4 +26,11 @@
         where m.id = #{id}
     </select>
 
+    <!--登录:按用户名查询组员(密码为 BCrypt 密文,由服务层校验)-->
+    <select id="getByUsername" resultType="com.hajimi.backend.entity.Member">
+        select id,username,password,name,image,group_id
+        from member
+        where username = #{username}
+    </select>
+
 </mapper>
