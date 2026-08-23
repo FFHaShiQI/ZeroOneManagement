@@ -105,33 +105,32 @@ const handleReset = () => {
 </template>
 
 <style scoped>
-/* ② 美化背景：使用现代感的蓝紫全屏渐变 */
+/* ② 美化背景：使用清爽绿意全屏渐变 */
 .login-page {
     height: 100vh;
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    /* 如果不想纯渐变，也可以加一个背景图，例如： */
-    /* background: url('@/assets/login-bg.png') no-repeat center center; background-size: cover; */
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 }
 
-/* ③ 美化卡片：增加圆角和阴影，提升质感 */
+/* ③ 美化卡片：增加半透明毛玻璃效果，提升质感 */
 .login-card {
     width: 520px;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.95); /* 半透明白 */
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
     padding: 50px 60px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(17, 153, 142, 0.3); /* 绿色柔和阴影 */
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .title {
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    color: #333;
+    color: #0f7b3a; /* 呼应主题绿 */
     margin-bottom: 40px;
     letter-spacing: 2px;
 }
@@ -194,6 +193,6 @@ const handleReset = () => {
 }
 
 .register-link:hover {
-    color: #667eea;
+    color: #11998e; /* 渐变的主色 */
 }
 </style>

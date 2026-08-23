@@ -164,22 +164,24 @@ const handleBack = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 }
 
 .register-card {
     width: 550px;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.95); /* 半透明白 */
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
     padding: 50px 60px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(17, 153, 142, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .title {
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    color: #333;
+    color: #0f7b3a; /* 呼应主题绿 */
     margin-bottom: 40px;
     letter-spacing: 2px;
 }
@@ -235,7 +237,7 @@ const handleBack = () => {
 }
 
 .mode-btn:hover {
-    color: #667eea;
+    color: #11998e;
 }
 
 .back-btn {
@@ -248,6 +250,6 @@ const handleBack = () => {
 }
 
 .back-btn:hover {
-    color: #667eea;
+    color: #11998e;
 }
 </style>
