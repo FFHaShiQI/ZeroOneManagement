@@ -9,7 +9,7 @@ import com.hajimi.backend.service.RegisterService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.hajimi.backend.Utils.GlobalExceptionHandler.BizException;
+import com.hajimi.backend.exception.globalExceptionHandler.BizException;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
