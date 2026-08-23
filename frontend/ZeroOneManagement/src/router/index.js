@@ -11,14 +11,13 @@ import GroupManageView from '@/views/senior/GroupsManageView.vue'
 import LeavesManageView from '@/views/senior/LeavesManageView.vue'
 import MembersManageView from '@/views/senior/MembersManageView.vue'
 import SeniorSelfInfoView from '@/views/senior/SeniorSelfInfoView.vue'
-
-
+import DashboardView from '@/views/senior/DashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/login' },
-    { path: '/login', name: 'login', component: LoginView }, 
+    { path: '/login', name: 'login', component: LoginView },
     { path: '/register', name: 'register', component: RegisterView },
 
     {
@@ -29,7 +28,7 @@ const router = createRouter({
         { path: '', redirect: '/member/memberSelfInfo' },
         { path: 'memberSelfInfo', component: MemberSelfInfoView },
         { path: 'groupInfo', component: GroupInfoView },
-        { path: 'leaveApply', component: LeaveApplyView }      
+        { path: 'leaveApply', component: LeaveApplyView }
       ]
     },
     {
@@ -38,14 +37,18 @@ const router = createRouter({
       component: SeniorIndexView,
       children: [
         { path: '', redirect: '/senior/membersManage' },
-        { path: 'groupManage', component: GroupManageView },
-        { path: 'leavesManage', component: LeavesManageView },
-        { path: 'membersManage', component: MembersManageView },
-        { path: 'seniorSelfInfo', component: SeniorSelfInfoView }
+        { path: 'groupManage', component: GroupManageView, meta: { title: '小组管理' } },
+        { path: 'leavesManage', component: LeavesManageView, meta: { title: '请假审核' } },
+        { path: 'membersManage', component: MembersManageView, meta: { title: '组员管理' } },
+        { path: 'seniorSelfInfo', component: SeniorSelfInfoView, meta: { title: '个人信息' } },
+        { path: 'dashboard', component: DashboardView, meta: { title: '仪表盘' } }
       ]
     }
-
   ]
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title ? `${to.meta.title} - 零壹星` : '零壹星'
 })
 
 export default router

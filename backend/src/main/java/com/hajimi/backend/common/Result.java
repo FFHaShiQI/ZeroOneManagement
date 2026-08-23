@@ -5,18 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Auther: 与或非
- * @Date: 2026/8/20 - 08 - 20
+ * @Auther: jone
+ * @Date: 2026/8/19 - 08 - 19 - 16:26
  * @Description: com.hajimi.backend.common
  * @version: 1.0
  */
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class Result {
+public class Result<T> {
     private Integer code; //编码：1成功，0为失败
     private String msg; //错误信息
-    private Object data; //数据
+    private T data; //数据
 
     public static Result success() {
         Result result = new Result();
