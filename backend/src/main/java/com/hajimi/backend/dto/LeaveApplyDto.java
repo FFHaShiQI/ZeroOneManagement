@@ -34,18 +34,5 @@ public class LeaveApplyDto {
      * 页大小
      */
     private Integer pageSize;
-//    public LocalDate getEnd() { return end; }
-//    public void setEnd(LocalDate value) { this.end = value; }
-//
-//    public String getName() { return name; }
-//    public void setName(String value) { this.name = value; }
-//
-//    public LocalDate getStart() { return start; }
-//    public void setStart(LocalDate value) { this.start = value; }
-//
-//    public Long getStatus() { return status; }
-//    public void setStatus(Long value) { this.status = value; }
-//
-//    public Long getType() { return type; }
-//    public void setType(Long value) { this.type = value; }
+
 }

@@ -30,7 +30,7 @@ public class LeavesController {
      * leaveApplyDto
      */
     @GetMapping("/senior/leaves")
-    public Result<PageResult<LeaveApplyVo>> leavesPageResult(LeaveApplyDto leaveApplyDto) {
+    public Result leavesPageResult(LeaveApplyDto leaveApplyDto) {
         try {
             PageResult<LeaveApplyVo> pageResult = leavesService.fuzzyQuery(leaveApplyDto);
             return Result.success(pageResult);
@@ -45,7 +45,7 @@ public class LeavesController {
      * leaveAuditDto
      */
     @PutMapping("/senior/leaves")
-    public Result<Void> leaveAudit(@RequestBody LeaveAuditDto leaveAuditDto) {
+    public Result leaveAudit(@RequestBody LeaveAuditDto leaveAuditDto) {
         try {
             leaveAuditService.auditResult(leaveAuditDto);
             return Result.success();
@@ -60,7 +60,7 @@ public class LeavesController {
      * id
      */
     @DeleteMapping("/senior/leaves/{id}")
-    public Result<Void> leaveDelete(@PathVariable Integer id) {
+    public Result leaveDelete(@PathVariable Integer id) {
         try {
             leaveDeleteService.deleteLeaveById(id);
             return Result.success();

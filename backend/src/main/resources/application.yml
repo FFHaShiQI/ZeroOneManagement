@@ -1,20 +1,36 @@
 spring:
   application:
-    name: backend
+    name: zero-one-management
+  # 配置数据库信息
   datasource:
-    url: jdbc:mysql://localhost:3306/zeroonestars?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/zeroonestars
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
-#mybatis相关配置
+  servlet:
+    multipart:
+      # 设置springboot项目中最大单个文件大小
+      max-file-size: 10MB
+      # 设置最大请求大小（包括所有文件和表单数据）
+      max-request-size: 100MB
+
+# mybatis相关配置
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    #开启驼峰命名的开关
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: true  # 开启驼峰命名自动识别
 
-#配置事务管理日志级别
+# 配置事务管理日志级别
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
+
+# 阿里云参数配置
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    bucket-name: 01star
+    region: cn-beijing
+    key-id: LTAI5t9FRXesWwteT2BSTFCS
+    key-secret: YErAUruv2p3y2ZoG3K4B37w5C8G8Ao
