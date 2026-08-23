@@ -18,7 +18,7 @@ public class LeaveApplyVo {
     private LocalDate start;
     private LocalDate end;
     private Integer status;
-    private Integer seniorId;
+    private String seniorName;
     private String feedback;
     private LocalDateTime createTime;
 }

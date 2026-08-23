@@ -9,6 +9,7 @@
         SELECT
         m.name AS member_name,
         g.name AS group_name,
+        s.name AS senior_name,
         la.type,
         la.reason,
         la.image,
