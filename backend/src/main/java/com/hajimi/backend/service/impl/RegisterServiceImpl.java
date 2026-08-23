@@ -18,6 +18,9 @@ public class RegisterServiceImpl implements RegisterService {
     @Autowired
     private SeniorMapper seniorMapper;
 
+    //固定学长邀请码
+    private static final String SENIOR_INVITE_CODE = "STAR2026";
+
     /**
      * W
      * 注册（加密存入数据库，测试时不要用数据库的信息，自己用注册功能加一个）
@@ -41,8 +44,8 @@ public class RegisterServiceImpl implements RegisterService {
         }
 
         if(Boolean.TRUE.equals(dto.getOption())){
-            if(dto.getInviteCode() == null || dto.getInviteCode().isBlank()){
-                throw new BizException("学长注册必须填写邀请码");
+            if(dto.getInviteCode() == null || dto.getInviteCode().isBlank() || !dto.getInviteCode().equals(SENIOR_INVITE_CODE)){
+                throw new BizException("学长注册必须填写真确的邀请码");
             }
         }else if(Boolean.FALSE.equals(dto.getOption())){
             if(dto.getGroupId() == null){
