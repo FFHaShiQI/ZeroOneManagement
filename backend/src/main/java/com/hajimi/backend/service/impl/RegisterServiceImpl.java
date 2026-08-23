@@ -26,6 +26,8 @@ public class RegisterServiceImpl implements RegisterService {
                 || dto.getOption() == null) {
             throw new BizException("必填参数不能为空");
         }
+        Member member = new Member();
+        Senior senior = new Senior();
         //用户名重复检查(真实查询库表)
         if(memberMapper.countByUsername(dto.getUsername()) > 0
                 || seniorMapper.countByUsername(dto.getUsername()) > 0) {
