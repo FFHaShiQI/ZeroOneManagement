@@ -25,9 +25,14 @@ public class LeavesServiceImpl implements LeavesService {
      */
     @Override
     public PageResult<LeaveApplyVo> fuzzyQuery(LeaveApplyDto leaveApplyDto) {
-        //设置分页参数（pageHelper）
-        PageHelper.startPage(leaveApplyDto.getPageNum(), leaveApplyDto.getPageSize());
+        // 默认值：第1页，每页10条
+        Integer pageNum = leaveApplyDto.getPageNum();
+        Integer pageSize = leaveApplyDto.getPageSize();
+        if(pageNum == null) pageNum = 1;
+        if(pageSize == null) pageSize = 10;
 
+        //设置分页参数（pageHelper）
+        PageHelper.startPage(pageNum, pageSize);
 
         //执行查询
         List<LeaveApplyVo> leaveList = leavesMapper.fuzzySelect(leaveApplyDto);
