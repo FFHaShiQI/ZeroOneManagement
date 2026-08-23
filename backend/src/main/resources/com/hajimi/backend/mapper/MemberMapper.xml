@@ -26,4 +26,71 @@
         where m.id = #{id}
     </select>
 
+    <!--登录:按用户名查询组员(密码为 BCrypt 密文,由服务层校验)-->
+    <select id="getByUsername" resultType="com.hajimi.backend.entity.Member">
+        select id,username,password,name,image,group_id
+        from member
+        where username = #{username}
+    </select>
+
+    <!--新增组员(学长添加,全字段,自增id回填)-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into member (username, password, name, group_id, gender, age, image, self_intro, number, pos)
+        values (#{username}, #{password}, #{name}, #{groupId}, #{gender}, #{age}, #{image}, #{selfIntro}, #{number}, #{pos})
+    </insert>
+
+    <!--分页模糊查询组员(按昵称/小组名模糊,按性别/职位筛选;不含密码)-->
+    <select id="pageQuery" resultType="com.hajimi.backend.vo.MemberVo">
+        select m.id, m.username, m.name, m.group_id, g.name as group_name,
+               m.gender, m.age, m.image, m.self_intro, m.number, m.pos
+        from member m
+        left join `group` g on m.group_id = g.id
+        <where>
+            <if test="query.name != null and query.name != ''">
+                and m.name like concat('%', #{query.name}, '%')
+            </if>
+            <if test="query.gender != null">
+                and m.gender = #{query.gender}
+            </if>
+            <if test="query.pos != null">
+                and m.pos = #{query.pos}
+            </if>
+            <if test="query.groupName != null and query.groupName != ''">
+                and g.name like concat('%', #{query.groupName}, '%')
+            </if>
+        </where>
+        order by m.id desc
+        limit #{query.pageSize} offset #{offset}
+    </select>
+
+    <!--统计符合条件的组员总数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(*)
+        from member m
+        left join `group` g on m.group_id = g.id
+        <where>
+            <if test="query.name != null and query.name != ''">
+                and m.name like concat('%', #{query.name}, '%')
+            </if>
+            <if test="query.gender != null">
+                and m.gender = #{query.gender}
+            </if>
+            <if test="query.pos != null">
+                and m.pos = #{query.pos}
+            </if>
+            <if test="query.groupName != null and query.groupName != ''">
+                and g.name like concat('%', #{query.groupName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!--批量删除组员-->
+    <delete id="deleteByIds">
+        delete from member
+        where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

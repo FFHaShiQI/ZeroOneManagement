@@ -25,8 +25,8 @@ public class LeaveApplyDto {
     private String name;
     /** 审核状态 */
     private Integer status;
-    /** 页码 */
-    private Integer pageNum;
+    /** 页码(与前端传参 page 对齐) */
+    private Integer page;
     /** 页大小 */
     private Integer pageSize;
 }

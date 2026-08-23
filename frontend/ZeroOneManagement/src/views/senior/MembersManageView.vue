@@ -75,6 +75,11 @@ function handleSizeChange(size) {
   loadList()
 }
 
+function handleCurrentChange(page) {
+  queryParams.page = page
+  loadList()
+}
+
 // ---------- 新建/编辑弹窗(共用) ----------
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -285,6 +290,7 @@ onMounted(loadList)
           :page-sizes="[10, 20, 50]"
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
         />
       </div>
     </el-card>

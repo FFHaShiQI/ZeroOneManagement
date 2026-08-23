@@ -1,11 +1,15 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue' // ① 引入 onMounted
 import { useRouter } from 'vue-router'
-import { clearAuth } from '@/utils/auth'
+import { ElMessage } from 'element-plus'
+// 引入图标，如果不导入模板里的图标会不显示
+import { User, HomeFilled, Message, SwitchButton } from '@element-plus/icons-vue'
 
 const router = useRouter()
-// 用户名
-const name = ref('土豆雷')
+
+// 用户名（初始值给个空字符串，防止闪烁）
+const name = ref('')
+
 // 小组信息弹窗是否显示
 const dialogTableVisible = ref(false)
 // 小组成员信息
@@ -20,18 +24,41 @@ const groupMembers = ref([
   { name: 'W', position: '监督管' }
 ])
 
-
 // 显示小组信息弹窗
 const showGroupInfo = () => {
   dialogTableVisible.value = true
 }
 
-// 退出登录
-const logout = () => {
-  clearAuth()
-  router.replace('/login')
-}
+// ② 挂载时动态获取真实昵称
+onMounted(() => {
+  const userDataStr = localStorage.getItem('userData')
+  if (userDataStr) {
+    try {
+      const userData = JSON.parse(userDataStr)
+      // 优先取 nickName，如果没有则默认显示"用户"
+      name.value = userData?.userInfo?.nickname || '用户'
+    } catch (e) {
+      console.error('解析用户数据失败', e)
+      name.value = '用户'
+    }
+  } else {
+    name.value = '用户'
+  }
+})
 
+// 退出登录逻辑（保持不变）
+const logout = () => {
+  localStorage.removeItem('userData')
+  localStorage.removeItem('token')
+  localStorage.removeItem('role')
+  localStorage.removeItem('id')
+  localStorage.removeItem('groupId')
+  localStorage.removeItem('nickname')
+  localStorage.removeItem('avatar')
+
+  ElMessage.success('退出登录成功')
+  router.push('/login')
+}
 </script>
 
 <template>

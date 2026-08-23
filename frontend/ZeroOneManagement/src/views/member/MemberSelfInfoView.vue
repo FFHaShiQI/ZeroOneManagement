@@ -10,15 +10,26 @@ const userInfo = ref({
 })
 const editForm = ref({})
 
+const getUserId = () => {
+    const userDataStr = localStorage.getItem('userData')
+    const userData = userDataStr ? JSON.parse(userDataStr) : null
+    return userData?.userInfo?.id || localStorage.getItem('id')
+}
+
 onMounted(async () => {
-    const result = await getMemberInfo(localStorage.getItem('id'))
-    if (result.code === 1) {
-        userInfo.value = result.data
+    const userId = getUserId()
+    if (userId) {
+        const result = await getMemberInfo(userId)
+        if (result.code === 1) {
+            userInfo.value = result.data
+        }
+    } else {
+        ElMessage.warning('未获取到用户ID，请重新登录')
     }
 })
 
 const genderOptions = [ { value: 1, label: '男' }, { value: 2, label: '女' } ]
-const posOptions = [ { value: 1, label: '组长' }, { value: 2, label: '副组长' }, { value: 3, label: '产品经理' }, { value: 4, label: '信息官' }, { value: 5, label: '技术官' }, { value: 6, label: '监督管' } ]
+const posOptions = [ { value: 1, label: '组长' }, { value: 2, label: '副组长' }, { value: 3, label: '产品经理' }, { value: 4, label: '信息官' }, { value: 5, label: '技术官' }, { value: 6, label: '监督官' } ]
 
 const dialogVisible = ref(false)
 
@@ -36,7 +47,6 @@ const handleAvatarChange = async (uploadFileObj) => {
 
         const uploadRes = await uploadFile(formData)
         if (uploadRes.code === 1) {
-            // 修改点：因为返回的data就是URL字符串，所以直接取 data，不要取 data.url
             editForm.value.image = uploadRes.data 
             ElMessage.success('头像上传成功')
         } else {
@@ -47,7 +57,6 @@ const handleAvatarChange = async (uploadFileObj) => {
 
 // 修改：保存后重新查询接口
 const handleSave = async () => {
-    // 1. 组装参数（参考你截图的接口文档）
     const payload = {
         id: editForm.value.id,
         name: editForm.value.name,
@@ -60,12 +69,11 @@ const handleSave = async () => {
         pos: editForm.value.pos
     }
 
-    // 2. 发送修改请求
     const result = await updateMemberInfo(payload)
     
     if (result.code === 1) {
-        // 3. 用户说得对：修改成功后，重新调用查询接口，保证页面数据的绝对准确！
-        const freshData = await getMemberInfo(localStorage.getItem('id'))
+        
+        const freshData = await getMemberInfo(getUserId())
         if (freshData.code === 1) {
             userInfo.value = freshData.data
         }

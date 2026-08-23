@@ -25,8 +25,14 @@ public class LeavesServiceImpl implements LeavesService {
      */
     @Override
     public PageResult<LeaveApplyVo> fuzzyQuery(LeaveApplyDto leaveApplyDto) {
-        //设置分页参数（pageHelper）
-        PageHelper.startPage(leaveApplyDto.getPageNum(), leaveApplyDto.getPageSize());
+        //设置分页参数（pageHelper）,未传时分页参数使用默认值
+        if (leaveApplyDto.getPage() == null) {
+            leaveApplyDto.setPage(1);
+        }
+        if (leaveApplyDto.getPageSize() == null) {
+            leaveApplyDto.setPageSize(10);
+        }
+        PageHelper.startPage(leaveApplyDto.getPage(), leaveApplyDto.getPageSize());
 
 
         //执行查询

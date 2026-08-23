@@ -6,9 +6,10 @@ import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.RegisterService;
+import com.hajimi.backend.utils.BizExceptionHandler.BizException;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.hajimi.backend.utils.BizExceptionHandler.BizException;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
@@ -17,6 +18,14 @@ public class RegisterServiceImpl implements RegisterService {
     @Autowired
     private SeniorMapper seniorMapper;
 
+    //固定学长邀请码
+    private static final String SENIOR_INVITE_CODE = "STAR2026";
+
+    /**
+     * W
+     * 注册（加密存入数据库，测试时不要用数据库的信息，自己用注册功能加一个）
+     * dto
+     */
     @Override
     public void register(RegisterDto dto) {
         if(dto.getUsername() == null
@@ -26,37 +35,39 @@ public class RegisterServiceImpl implements RegisterService {
                 || dto.getOption() == null) {
             throw new BizException("必填参数不能为空");
         }
-        Member member = new Member();
-        Senior senior = new Senior();
-        //用户名重复检查(真实查询库表)
-        if(memberMapper.countByUsername(dto.getUsername()) > 0
-                || seniorMapper.countByUsername(dto.getUsername()) > 0) {
+
+        // 查询数据库判断用户名是否重复
+        Member existMember = memberMapper.getByUsername(dto.getUsername());
+        Senior existSenior = seniorMapper.getByUsername(dto.getUsername());
+        if(existMember != null || existSenior != null){
             throw new BizException("用户名不能重复");
         }
+
         if(Boolean.TRUE.equals(dto.getOption())){
-            //学长注册
-            if(dto.getInviteCode() == null || dto.getInviteCode().isBlank()){
-                throw new BizException("学长注册必须填写邀请码");
+            if(dto.getInviteCode() == null || dto.getInviteCode().isBlank() || !dto.getInviteCode().equals(SENIOR_INVITE_CODE)){
+                throw new BizException("学长注册必须填写真确的邀请码");
             }
         }else if(Boolean.FALSE.equals(dto.getOption())){
-            //学员注册
             if(dto.getGroupId() == null){
                 throw new BizException("学员注册需要填写小组ID");
             }
         }
 
-        //存学员数据(密码明文存储,与登录查询保持一致)
+        //存学员数据(密码BCrypt加密存储,与登录校验保持一致)
         if(Boolean.FALSE.equals(dto.getOption())){
+            Member member = new Member();
+            String encryptPwd = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
             member.setUsername(dto.getUsername());
-            member.setPassword(dto.getPassword());
+            member.setPassword(encryptPwd);
             member.setGroupId(dto.getGroupId());
             memberMapper.saveInMember(member);
         }
 
-        //存学长数据
         if(Boolean.TRUE.equals(dto.getOption())){
+            Senior senior = new Senior();
+            String encryptPwd = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
             senior.setUsername(dto.getUsername());
-            senior.setPassword(dto.getPassword());
+            senior.setPassword(encryptPwd);
             seniorMapper.saveInSenior(senior);
         }
     }

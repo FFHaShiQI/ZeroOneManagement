@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class LeaveApplyVo {
     //来自Member表
+    private Integer id;         //请假记录id
     private String memberName;
     //来自Group表
     private String groupName;
