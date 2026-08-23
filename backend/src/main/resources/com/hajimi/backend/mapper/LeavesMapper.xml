@@ -18,7 +18,7 @@
         la.senior_id,
         la.feedback,
         la.create_time
-        FROM leave_apply la
+        FROM leaveapply la
         LEFT JOIN member m ON la.member_id = m.id
         LEFT JOIN `group` g ON m.group_id = g.id
         LEFT JOIN senior s ON la.senior_id = s.id
@@ -44,7 +44,7 @@
 
     <!--审核，只更新status、feedback，不操作senior_id-->
     <update id="audit">
-        UPDATE leave_apply
+        UPDATE leaveapply
         SET
             status = #{status},
             feedback = #{feedback}
@@ -53,7 +53,7 @@
 
     <!--删除请假记录-->
     <delete id="deleteLeaveById">
-        DELETE FROM leave_apply WHERE id = #{id}
+        DELETE FROM leaveapply WHERE id = #{id}
     </delete>
 
 </mapper>

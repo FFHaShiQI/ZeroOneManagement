@@ -1,10 +1,12 @@
 package com.hajimi.backend.mapper;
 
+import com.hajimi.backend.dto.MemberQueryDto;
 import com.hajimi.backend.dto.MemberUpdateDto;
 import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.vo.MemberVo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -63,4 +65,33 @@ public interface MemberMapper {
      */
     @Insert("insert into member (username, password, group_id) values (#{username}, #{password}, #{groupId})")
     void saveInMember(Member member);
+
+    /**
+     * 新增组员(学长添加,全字段,自增id回填)
+     * @param member 组员实体
+     * @return 影响行数
+     */
+    int insert(Member member);
+
+    /**
+     * 分页模糊查询组员(按昵称/小组名模糊,按性别/职位筛选)
+     * @param query 查询条件
+     * @param offset 偏移量
+     * @return 组员列表
+     */
+    List<MemberVo> pageQuery(@Param("query") MemberQueryDto query, @Param("offset") int offset);
+
+    /**
+     * 统计符合条件的组员总数
+     * @param query 查询条件
+     * @return 总记录数
+     */
+    Long count(@Param("query") MemberQueryDto query);
+
+    /**
+     * 批量删除组员
+     * @param ids 组员编号列表
+     * @return 影响行数
+     */
+    int deleteByIds(@Param("list") List<Integer> ids);
 }

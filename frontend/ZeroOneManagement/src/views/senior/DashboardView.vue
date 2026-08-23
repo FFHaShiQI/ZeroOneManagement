@@ -145,13 +145,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div v-loading="loading" class="dashboard">
-    <el-alert
-      type="info"
-      :closable="false"
-      show-icon
-      title="统计当前由现有接口临时聚合,待后端提供统计接口后替换"
-      class="dashboard-tip"
-    />
 
     <!-- 统计卡片 -->
     <el-row :gutter="16">
