@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hajimi.backend.mapper.LeavesMapper">
+
+    <!--分页模糊查询请假记录 联表-->
+    <select id="fuzzySelect" resultType="com.hajimi.backend.vo.LeaveApplyVo">
+        SELECT
+        m.name AS member_name,
+        g.name AS group_name,
+        la.type,
+        la.reason,
+        la.image,
+        la.start,
+        la.end,
+        la.status,
+        la.senior_id,
+        la.feedback,
+        la.create_time
+        FROM leave_apply la
+        LEFT JOIN member m ON la.member_id = m.id
+        LEFT JOIN `group` g ON m.group_id = g.id
+        LEFT JOIN senior s ON la.senior_id = s.id
+        <where>
+            <if test="dto.name != null and dto.name != ''">
+                AND m.name LIKE CONCAT('%',#{dto.name},'%')
+            </if>
+            <if test="dto.type != null">
+                AND la.type = #{dto.type}
+            </if>
+            <if test="dto.status != null">
+                AND la.status = #{dto.status}
+            </if>
+            <if test="dto.start != null">
+                AND la.start &gt;= #{dto.start}
+            </if>
+            <if test="dto.end != null">
+                AND la.end &lt;= #{dto.end}
+            </if>
+        </where>
+        ORDER BY la.create_time DESC
+    </select>
+
+    <!--审核，只更新status、feedback，不操作senior_id-->
+    <update id="audit">
+        UPDATE leave_apply
+        SET
+            status = #{status},
+            feedback = #{feedback}
+        WHERE id = #{id}
+    </update>
+
+    <!--删除请假记录-->
+    <delete id="deleteLeaveById">
+        DELETE FROM leave_apply WHERE id = #{id}
+    </delete>
+
+</mapper>
