@@ -15,7 +15,7 @@ public class MemberVo {
     private String name;        //昵称
     private String username;    //用户名
     private String password;    //密码
-    private String groupName;  //所属小组名称
+    private String groupName;   //所属小组名称
     private Integer gender;     //性别：1男2女
     private Integer age;        //年龄
     private String image;       //头像（链接）

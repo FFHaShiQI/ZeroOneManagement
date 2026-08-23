@@ -3,7 +3,7 @@ package com.hajimi.backend.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hajimi.backend.dto.LeaveApplyDto;
-import com.hajimi.backend.entity.PageResult;
+import com.hajimi.backend.vo.PageResult;
 import com.hajimi.backend.mapper.LeavesMapper;
 import com.hajimi.backend.service.LeavesService;
 import com.hajimi.backend.vo.LeaveApplyVo;

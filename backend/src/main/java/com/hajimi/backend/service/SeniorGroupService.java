@@ -2,6 +2,7 @@ package com.hajimi.backend.service;
 
 import com.hajimi.backend.dto.GroupQueryDto;
 import com.hajimi.backend.entity.Group;
+import com.hajimi.backend.vo.GroupIdName;
 import com.hajimi.backend.vo.PageResult;
 
 import java.util.List;
@@ -36,4 +37,6 @@ public interface SeniorGroupService {
      * @param groupIds 小组id列表
      */
     void deleteById(List<Integer> groupIds);
+
+    List<GroupIdName> getAll();
 }

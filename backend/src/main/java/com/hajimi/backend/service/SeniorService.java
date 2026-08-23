@@ -1,7 +1,7 @@
 package com.hajimi.backend.service;
 
 import com.hajimi.backend.dto.SeniorUpdateDto;
-import com.hajimi.backend.Vo.SeniorVo;
+import com.hajimi.backend.vo.SeniorVo;
 
 /**
  * @Auther: Cat

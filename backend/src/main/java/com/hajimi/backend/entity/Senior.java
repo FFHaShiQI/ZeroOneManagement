@@ -2,17 +2,6 @@ package com.hajimi.backend.entity;
 
 import lombok.Data;
 
-<<<<<<< HEAD
-@Data
-public class Senior {
-    private Integer id;
-    private Integer type;
-    private String name;
-    private String number;
-    private String username;
-    private String password;
-    private String image;
-=======
 /**
  * @Auther: Cat
  * @Date: 2026/8/19 - 08 - 19
@@ -29,5 +18,4 @@ public class Senior {
     private String username;    //用户名（登录账号）
     private String password;    //密码（加密存储）
     private String image;       //头像（链接）
->>>>>>> feature/senior/profile
 }

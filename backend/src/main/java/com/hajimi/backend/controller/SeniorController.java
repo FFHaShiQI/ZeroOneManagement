@@ -3,7 +3,7 @@ package com.hajimi.backend.controller;
 import com.hajimi.backend.common.Result;
 import com.hajimi.backend.dto.SeniorUpdateDto;
 import com.hajimi.backend.service.SeniorService;
-import com.hajimi.backend.Vo.SeniorVo;
+import com.hajimi.backend.vo.SeniorVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,7 +1,7 @@
 package com.hajimi.backend.service;
 
 import com.hajimi.backend.dto.LeaveApplyDto;
-import com.hajimi.backend.entity.PageResult;
+import com.hajimi.backend.vo.PageResult;
 import com.hajimi.backend.vo.LeaveApplyVo;
 
 public interface LeavesService {
