@@ -2,83 +2,25 @@
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { pageQueryMembers, addMember, updateMember, deleteMembers } from '@/api/senior/members'
+import { getAllGroups } from '@/api/senior/groups'
+import { GENDER_OPTIONS, POS_OPTIONS, optionLabel } from '@/constants/senior'
+import { uploadFile } from '@/api/upload/upload'
+import { usePageList } from '@/composables/usePageList'
 
-// 性别: 1男 2女
-const GENDER_OPTIONS = [
-  { label: '男', value: 1 },
-  { label: '女', value: 2 }
-]
-// 职位: 1组长 2副组长 3产品经理 4信息官 5技术官 6监督官
-const POS_OPTIONS = [
-  { label: '组长', value: 1 },
-  { label: '副组长', value: 2 },
-  { label: '产品经理', value: 3 },
-  { label: '信息官', value: 4 },
-  { label: '技术官', value: 5 },
-  { label: '监督官', value: 6 }
-]
-
-function genderLabel(value) {
-  return GENDER_OPTIONS.find((opt) => opt.value === value)?.label ?? '-'
-}
-function posLabel(value) {
-  return POS_OPTIONS.find((opt) => opt.value === value)?.label ?? '-'
-}
-
-// ---------- 查询区 ----------
-const queryParams = reactive({
-  name: '',
-  gender: null,
-  pos: null,
-  groupName: '',
-  page: 1,
-  pageSize: 10
+const { queryParams, tableData, total, loading, loadList, handleQuery, handleReset, handleSizeChange, handleCurrentChange } = usePageList({
+  fetchFn: pageQueryMembers,
+  initialParams: { name: '', gender: null, pos: null, groupName: '' }
 })
 
-const tableData = ref([])
-const total = ref(0)
-const loading = ref(false)
+// ---------- 小组下拉选项(新建时选所属小组) ----------
+const groupOptions = ref([])
+async function loadGroupOptions() {
+  const res = await getAllGroups()
+  groupOptions.value = res.code === 1 ? res.data || [] : []
+}
+onMounted(loadGroupOptions)
+
 const selectedRows = ref([])
-
-async function loadList() {
-  loading.value = true
-  try {
-    const res = await pageQueryMembers(queryParams)
-    if (res.code === 1) {
-      tableData.value = res.data?.rows || []
-      total.value = res.data?.total || 0
-    } else {
-      ElMessage.error(res.msg || '查询失败')
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-function handleQuery() {
-  queryParams.page = 1
-  loadList()
-}
-
-function handleReset() {
-  queryParams.name = ''
-  queryParams.gender = null
-  queryParams.pos = null
-  queryParams.groupName = ''
-  queryParams.page = 1
-  loadList()
-}
-
-function handleSizeChange(size) {
-  queryParams.pageSize = size
-  queryParams.page = 1
-  loadList()
-}
-
-function handleCurrentChange(page) {
-  queryParams.page = page
-  loadList()
-}
 
 // ---------- 新建/编辑弹窗(共用) ----------
 const dialogVisible = ref(false)
@@ -89,7 +31,7 @@ const form = reactive({
   id: null,
   name: '',
   username: '',
-  password: '123456',
+  password: '',
   groupId: null,
   gender: 1,
   age: null,
@@ -98,18 +40,32 @@ const form = reactive({
   pos: null
 })
 
+// 联系方式校验: 支持手机号(1 开头 11 位)/座机/邮箱,留空不校验(非必填)
+const CONTACT_PHONE_RE = /^(?:1\d{10}|0\d{2,3}-?\d{7,8}(?:-\d+)?)$/
+const CONTACT_EMAIL_RE = /^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$/
+
+function validateContact(rule, value, callback) {
+  const v = (value ?? '').trim()
+  if (!v || CONTACT_PHONE_RE.test(v) || CONTACT_EMAIL_RE.test(v)) {
+    callback()
+  } else {
+    callback(new Error('请输入正确的电话号码或邮箱'))
+  }
+}
+
 const rules = {
   name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  groupId: [{ required: true, message: '请输入所属小组id', trigger: 'blur' }],
+  groupId: [{ required: true, message: '请选择所属小组', trigger: 'change' }],
   age: [{ required: true, message: '请输入年龄', trigger: 'blur' }],
-  pos: [{ required: true, message: '请选择职位', trigger: 'change' }]
+  pos: [{ required: true, message: '请选择职位', trigger: 'change' }],
+  number: [{ validator: validateContact, trigger: 'blur' }]
 }
 
 function openAddDialog() {
   dialogTitle.value = '新建组员'
   Object.assign(form, {
-    id: null, name: '', username: '', password: '123456',
+    id: null, name: '', username: '', password: '',
     groupId: null, gender: 1, age: null, image: '', number: '', pos: null
   })
   dialogVisible.value = true
@@ -121,7 +77,8 @@ function openEditDialog(row) {
     id: row.id,
     name: row.name,
     username: row.username,
-    password: row.password ?? '',
+    // 密码不回显,留空表示不修改
+    password: '',
     groupId: row.groupId,
     gender: row.gender ?? 1,
     age: row.age,
@@ -132,6 +89,21 @@ function openEditDialog(row) {
   dialogVisible.value = true
 }
 
+// 头像选择本地文件后直接上传,成功后把返回的 url 写入 form.image
+async function handleAvatarChange(uploadFileObj) {
+  const file = uploadFileObj.raw
+  if (!file) return
+  const formData = new FormData()
+  formData.append('file', file)
+  const uploadRes = await uploadFile(formData)
+  if (uploadRes.code === 1) {
+    form.image = uploadRes.data
+    ElMessage.success('头像上传成功')
+  } else {
+    ElMessage.error(uploadRes.msg || '头像上传失败')
+  }
+}
+
 async function handleSubmit() {
   try {
     await formRef.value.validate()
@@ -140,11 +112,16 @@ async function handleSubmit() {
   }
   submitting.value = true
   try {
-    const res = form.id
-      ? await updateMember({ ...form })
-      : await addMember({ ...form })
+    const payload = { ...form }
+    // 编辑时密码留空 = 不修改(后端 update 仅在密码非空时更新)
+    if (form.id !== null && !payload.password) {
+      delete payload.password
+    }
+    const res = form.id !== null
+      ? await updateMember(payload)
+      : await addMember(payload)
     if (res.code === 1) {
-      ElMessage.success(form.id ? '修改成功' : '创建成功')
+      ElMessage.success(form.id !== null ? '修改成功' : '创建成功')
       dialogVisible.value = false
       loadList()
     } else {
@@ -193,8 +170,6 @@ async function handleRowDelete(row) {
     ElMessage.error(res.msg || '删除失败')
   }
 }
-
-onMounted(loadList)
 </script>
 
 <template>
@@ -255,7 +230,7 @@ onMounted(loadList)
         <el-table-column prop="username" label="用户名" min-width="100" show-overflow-tooltip />
         <el-table-column prop="name" label="昵称" min-width="100" show-overflow-tooltip />
         <el-table-column label="性别" width="80" align="center">
-          <template #default="{ row }">{{ genderLabel(row.gender) }}</template>
+          <template #default="{ row }">{{ optionLabel(GENDER_OPTIONS, row.gender) }}</template>
         </el-table-column>
         <el-table-column prop="age" label="年龄" width="80" align="center" />
         <el-table-column label="小组" min-width="100" show-overflow-tooltip>
@@ -270,7 +245,7 @@ onMounted(loadList)
         <el-table-column prop="number" label="联系方式" min-width="110" show-overflow-tooltip />
         <el-table-column label="小组职位" width="100" align="center">
           <template #default="{ row }">
-            <el-tag>{{ posLabel(row.pos) }}</el-tag>
+            <el-tag>{{ optionLabel(POS_OPTIONS, row.pos) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="140" align="center" fixed="right">
@@ -301,7 +276,12 @@ onMounted(loadList)
         <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" placeholder="请输入用户名" />
+              <!-- 后端 MemberUpdateDto 不含 username,编辑时修改无效,故仅新建时可填 -->
+              <el-input
+                v-model="form.username"
+                :disabled="form.id !== null"
+                :placeholder="form.id !== null ? '用户名不可修改' : '请输入用户名'"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -313,12 +293,25 @@ onMounted(loadList)
         <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
-              <el-input v-model="form.password" type="password" show-password placeholder="默认 123456" />
+              <el-input
+                v-model="form.password"
+                type="password"
+                show-password
+                :placeholder="form.id !== null ? '留空则不修改' : '默认 123456'"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="所属小组id" prop="groupId">
-              <el-input-number v-model="form.groupId" :min="1" style="width: 100%" />
+            <el-form-item label="所属小组" prop="groupId">
+              <!-- 后端 MemberUpdateDto 不含 groupId,编辑时修改无效,故仅新建可选 -->
+              <el-select
+                v-model="form.groupId"
+                :disabled="form.id !== null"
+                placeholder="请选择所属小组"
+                style="width: 100%"
+              >
+                <el-option v-for="opt in groupOptions" :key="opt.id" :label="opt.name" :value="opt.id" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -326,7 +319,7 @@ onMounted(loadList)
           <el-col :span="12">
             <el-form-item label="性别" prop="gender">
               <el-radio-group v-model="form.gender">
-                <el-radio v-for="opt in GENDER_OPTIONS" :key="opt.value" :value="opt.value">
+                <el-radio v-for="opt in GENDER_OPTIONS" :key="opt.value" :label="opt.value">
                   {{ opt.label }}
                 </el-radio>
               </el-radio-group>
@@ -352,8 +345,20 @@ onMounted(loadList)
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="头像链接" prop="image">
-          <el-input v-model="form.image" placeholder="https://..." />
+        <el-form-item label="头像" prop="image">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :auto-upload="false"
+            accept="image/*"
+            :on-change="handleAvatarChange"
+          >
+            <div class="avatar-upload-trigger">
+              <el-avatar v-if="form.image" :src="form.image" :size="60" />
+              <span v-else class="avatar-upload-tip">点击上传头像</span>
+            </div>
+          </el-upload>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -379,5 +384,35 @@ onMounted(loadList)
   display: flex;
   justify-content: flex-end;
   margin-top: 16px;
+}
+
+.avatar-uploader :deep(.el-upload) {
+  border: 1px dashed #dcdfe6;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.avatar-uploader :deep(.el-upload:hover) {
+  border-color: #409eff;
+}
+
+.avatar-uploader :deep(.el-upload:focus-visible) {
+  outline: none;
+}
+
+.avatar-upload-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  min-height: 68px;
+}
+
+.avatar-upload-tip {
+  color: #909399;
+  font-size: 12px;
 }
 </style>

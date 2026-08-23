@@ -23,3 +23,8 @@ export function deleteGroups(groupIds) {
     params: { groupIds: groupIds.join(',') }
   })
 }
+
+// 查询所有小组(仅 id + name,供下拉选择使用)
+export function getAllGroups() {
+  return request.get('/senior/groups/All')
+}

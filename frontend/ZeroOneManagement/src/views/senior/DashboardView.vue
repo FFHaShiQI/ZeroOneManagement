@@ -7,25 +7,14 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { pageQueryGroups } from '@/api/senior/groups'
 import { pageQueryMembers } from '@/api/senior/members'
 import { pageQueryLeaves } from '@/api/senior/leaves'
+import { POS_OPTIONS, LEAVE_TYPE_OPTIONS } from '@/constants/senior'
 
 use([BarChart, PieChart, GridComponent, TooltipComponent, LegendComponent, CanvasRenderer])
 
 // 统计口径说明:
 // 后端暂无 dashboard 统计接口,以下数据通过现有分页接口的 total 聚合而来,
 // 待后端提供 /dashboard/statistics 后替换。
-const POS_LIST = [
-  { label: '组长', pos: 1 },
-  { label: '副组长', pos: 2 },
-  { label: '产品经理', pos: 3 },
-  { label: '信息官', pos: 4 },
-  { label: '技术官', pos: 5 },
-  { label: '监督官', pos: 6 }
-]
-const LEAVE_TYPE_LIST = [
-  { label: '事假', type: 1 },
-  { label: '病假', type: 2 },
-  { label: '其他', type: 3 }
-]
+// 注意: pos/type 字段为空的记录不会进入对应图表(以分页接口筛选口径为准),与总数卡片存在口径差异。
 
 const loading = ref(false)
 const stats = reactive({
@@ -43,35 +32,33 @@ let pieChart = null
 async function loadData() {
   loading.value = true
   try {
-    // ---------- 统计卡片 ----------
-    const [groups, members, leaves, pending] = await Promise.all([
+    // 一次并行发出全部统计请求(卡片 4 个 + 柱状图 6 个 + 饼图 3 个),避免串行分批
+    const [groups, members, leaves, pending, posCounts, typeCounts] = await Promise.all([
       pageQueryGroups({ page: 1, pageSize: 1 }),
       pageQueryMembers({ page: 1, pageSize: 1 }),
       pageQueryLeaves({ page: 1, pageSize: 1 }),
-      pageQueryLeaves({ page: 1, pageSize: 1, status: 0 })
+      pageQueryLeaves({ page: 1, pageSize: 1, status: 0 }),
+      Promise.all(POS_OPTIONS.map(({ value: pos }) => pageQueryMembers({ page: 1, pageSize: 1, pos }))),
+      Promise.all(LEAVE_TYPE_OPTIONS.map(({ value: type }) => pageQueryLeaves({ page: 1, pageSize: 1, type })))
     ])
+
+    // ---------- 统计卡片 ----------
     stats.groupTotal = groups?.data?.total ?? 0
     stats.memberTotal = members?.data?.total ?? 0
     stats.leaveTotal = leaves?.data?.total ?? 0
     stats.pendingAudit = pending?.data?.total ?? 0
 
     // ---------- 柱状图: 组员职位分布 ----------
-    const posCounts = await Promise.all(
-      POS_LIST.map(({ pos }) => pageQueryMembers({ page: 1, pageSize: 1, pos }))
-    )
     barChart.setOption({
-      xAxis: { data: POS_LIST.map((item) => item.label) },
+      xAxis: { data: POS_OPTIONS.map((item) => item.label) },
       series: [{ data: posCounts.map((d) => d?.data?.total ?? 0) }]
     })
 
     // ---------- 饼图: 请假类型分布 ----------
-    const typeCounts = await Promise.all(
-      LEAVE_TYPE_LIST.map(({ type }) => pageQueryLeaves({ page: 1, pageSize: 1, type }))
-    )
     pieChart.setOption({
       series: [
         {
-          data: LEAVE_TYPE_LIST.map((item, index) => ({
+          data: LEAVE_TYPE_OPTIONS.map((item, index) => ({
             name: item.label,
             value: typeCounts[index]?.data?.total ?? 0
           }))

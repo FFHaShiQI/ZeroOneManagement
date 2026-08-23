@@ -44,4 +44,13 @@ public class SeniorController {
 
         return Result.success();
     }
+
+    /**
+     * 查询全部学长(id + 姓名,供前端下拉选择)
+     * @return 学长选项列表
+     */
+    @GetMapping("/All")
+    public Result getAllSeniors() {
+        return Result.success(seniorService.getAll());
+    }
 }
