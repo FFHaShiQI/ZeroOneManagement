@@ -28,9 +28,10 @@ public class LeavesController {
      * W
      * 分页模糊查询请假记录
      * leaveApplyDto
+     * 测试的时候记得看看数据库表中leaveapply是不是leave_apply要不然会报错
      */
     @GetMapping("/senior/leaves")
-    public Result leavesPageResult(LeaveApplyDto leaveApplyDto) {
+    public Result<PageResult<LeaveApplyVo>> leavesPageResult(LeaveApplyDto leaveApplyDto) {
         try {
             PageResult<LeaveApplyVo> pageResult = leavesService.fuzzyQuery(leaveApplyDto);
             return Result.success(pageResult);
