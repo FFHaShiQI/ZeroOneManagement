@@ -3,6 +3,7 @@ package com.hajimi.backend.mapper;
 import com.hajimi.backend.dto.MemberUpdateDto;
 import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.vo.MemberVo;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -40,4 +41,29 @@ public interface MemberMapper {
     @Select("select id,name,gender,age,image,number,pos " +
             "from member where group_id = #{groupId}")
     List<MemberVo> getByGroupId(Integer groupId);
+
+    /**
+     * 登录:按用户名和密码查询组员
+     * @param username 用户名
+     * @param password 密码
+     * @return 组员实体
+     */
+    @Select("select id, username, password, name, group_id, gender, age, image, self_intro, number, pos " +
+            "from member where username = #{username} and password = #{password}")
+    Member getByUsernameAndPwd(String username, String password);
+
+    /**
+     * 统计同名用户名数量(注册查重)
+     * @param username 用户名
+     * @return 数量
+     */
+    @Select("select count(*) from member where username = #{username}")
+    int countByUsername(String username);
+
+    /**
+     * 新增组员(注册)
+     * @param member 组员实体
+     */
+    @Insert("insert into member (username, password, group_id) values (#{username}, #{password}, #{groupId})")
+    void saveInMember(Member member);
 }
