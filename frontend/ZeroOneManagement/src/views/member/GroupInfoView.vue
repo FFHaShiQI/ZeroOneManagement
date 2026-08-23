@@ -19,16 +19,19 @@ const genderMap = { 1: '男', 2: '女' }
 // 职位转换（对应接口文档 1组长，2副组长...）
 const posMap = { 1: '组长', 2: '副组长', 3: '产品经理', 4: '信息官', 5: '技术官', 6: '监督官' }
 
+const getGroupId = () => {
+    const userDataStr = localStorage.getItem('userData')
+    const userData = userDataStr ? JSON.parse(userDataStr) : null
+    return userData?.userInfo?.groupId || localStorage.getItem('groupId')
+}
+
 // 获取小组信息的主函数
 const fetchGroupInfo = async () => {
-    // ⚠️ 注意：这里需要替换为真实的 groupId！
-    // 如果你当前的 getMemberInfo 接口返回了 groupId，请这样写：
-    // const memberRes = await getMemberInfo(localStorage.getItem('id'))
-    // const groupId = memberRes.data.groupId
+    const groupId = getGroupId()
     
-    // 暂时为了方便调试，这里先写死一个值或者从 localStorage 里取
-    const groupId = localStorage.getItem('groupId') || 39 
-    
+    // 如果拿不到 groupId（比如未登录），直接返回，避免报错
+    if (!groupId) return
+
     const result = await getGroupInfo(groupId)
     if (result.code === 1) {
         groupInfo.value = result.data
