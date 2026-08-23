@@ -1,7 +1,7 @@
 package com.hajimi.backend.service;
 
-import com.hajimi.backend.DTO.LoginDTO;
-import com.hajimi.backend.VO.LoginVO;
+import com.hajimi.backend.dto.LoginDto;
+import com.hajimi.backend.vo.LoginVo;
 
 public interface LoginService {
     /**
@@ -9,5 +9,5 @@ public interface LoginService {
      * 登录功能实现类的接口
      *loginDTO
      */
-    LoginVO login(LoginDTO loginDTO);
+    LoginVo login(LoginDto loginDTO);
 }

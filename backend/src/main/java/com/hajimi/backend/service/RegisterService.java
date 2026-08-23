@@ -1,7 +1,7 @@
 package com.hajimi.backend.service;
 
-import com.hajimi.backend.DTO.RegisterDTO;
+import com.hajimi.backend.dto.RegisterDto;
 
 public interface RegisterService {
-    void register(RegisterDTO registerDTO);
+    void register(RegisterDto registerDTO);
 }

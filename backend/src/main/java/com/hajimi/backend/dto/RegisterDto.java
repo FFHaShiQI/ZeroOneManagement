@@ -1,9 +1,9 @@
-package com.hajimi.backend.DTO;
+package com.hajimi.backend.dto;
 
 import lombok.Data;
 
 @Data
-public class RegisterDTO {
+public class RegisterDto {
     /**
      * W
      * 对注册输入参数的封装

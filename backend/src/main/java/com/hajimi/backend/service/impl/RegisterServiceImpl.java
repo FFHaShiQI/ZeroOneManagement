@@ -1,6 +1,6 @@
 package com.hajimi.backend.service.impl;
 
-import com.hajimi.backend.DTO.RegisterDTO;
+import com.hajimi.backend.dto.RegisterDto;
 import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
@@ -21,7 +21,7 @@ public class RegisterServiceImpl implements RegisterService {
     private SeniorMapper seniorMapper;
 
     @Override
-    public void register(RegisterDTO dto) {
+    public void register(RegisterDto dto) {
         if(dto.getUsername() == null
                 || dto.getUsername().isEmpty()
                 || dto.getPassword() == null

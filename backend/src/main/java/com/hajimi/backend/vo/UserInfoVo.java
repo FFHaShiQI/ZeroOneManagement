@@ -1,9 +1,9 @@
-package com.hajimi.backend.VO;
+package com.hajimi.backend.vo;
 
 import lombok.Data;
 
 @Data
-public class UserInfoVO {
+public class UserInfoVo {
     /**
      * W
      * 对部分个人信息的封装
