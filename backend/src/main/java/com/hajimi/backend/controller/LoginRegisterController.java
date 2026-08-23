@@ -29,7 +29,7 @@ public class LoginRegisterController {
 
 
     @PostMapping("/login")
-    public Result<LoginVo> login(@RequestBody LoginDto loginDTO){
+    public Result login(@RequestBody LoginDto loginDTO){
         LoginVo loginVO = loginService.login(loginDTO);
         if(loginVO == null){
             return Result.error("账号或密码错误");
@@ -38,7 +38,7 @@ public class LoginRegisterController {
     }
 
     @PostMapping("/register")
-    public Result<Void> register(@RequestBody RegisterDto registerDTO) {
+    public Result register(@RequestBody RegisterDto registerDTO) {
         registerService.register(registerDTO);
         return Result.success();
     }
