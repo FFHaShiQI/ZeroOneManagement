@@ -18,7 +18,7 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping("/register")
-    public Result<Void> register(@RequestBody RegisterDTO registerDTO) {
+    public Result register(@RequestBody RegisterDTO registerDTO) {
         registerService.register(registerDTO);
         return Result.success();
     }

@@ -25,7 +25,7 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public Result<LoginVO> login(@RequestBody LoginDTO loginDTO){
+    public Result login(@RequestBody LoginDTO loginDTO){
         LoginVO loginVO = loginService.login(loginDTO);
         if(loginVO == null){
             return Result.error("账号或密码错误");

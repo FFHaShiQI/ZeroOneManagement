@@ -19,4 +19,14 @@ public class globalExceptionHandler {
         log.error("数据库删除异常", e);
         return Result.error("数据库删除异常");
     }
+    public static class BizException extends RuntimeException {
+        public BizException(String msg) {
+            super(msg);
+        }
+    }
+    //捕获我们自己抛出的业务异常
+    @ExceptionHandler(BizException.class)
+    public Result handleBizException(BizException e){
+        return Result.error(e.getMessage());
+    }
 }
