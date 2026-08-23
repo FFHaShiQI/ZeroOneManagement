@@ -10,5 +10,5 @@ export const register = async(data) => {
 }
 // 获取所有小组列表
 export const getAllGroups = async() => {
-   return await request.get("/senior/groups/all")
+   return await request.get("/senior/groups/All")
 }
