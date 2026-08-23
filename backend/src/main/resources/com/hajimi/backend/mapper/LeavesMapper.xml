@@ -42,12 +42,13 @@
         ORDER BY la.create_time DESC
     </select>
 
-    <!--审核，只更新status、feedback，不操作senior_id-->
+    <!--审核，更新status、feedback，seniorId-->
     <update id="audit">
         UPDATE leave_apply
         SET
             status = #{status},
-            feedback = #{feedback}
+            feedback = #{feedback},
+            senior_id = #{seniorId}
         WHERE id = #{id}
     </update>
 
