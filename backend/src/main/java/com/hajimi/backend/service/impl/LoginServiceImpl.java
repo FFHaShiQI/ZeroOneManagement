@@ -9,6 +9,7 @@ import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.LoginService;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,28 +18,37 @@ import java.util.Map;
 
 @Service
 public class LoginServiceImpl implements LoginService {
-    /**
-     * W
-     * 登录功能的实现
-     */
+
     @Autowired
     private MemberMapper memberMapper;
     @Autowired
     private SeniorMapper seniorMapper;
 
+    /**
+     * W
+     * 登录（加密判断）
+     * dto
+     */
+    @Override
     public LoginVo login(LoginDto dto) {
         String username = dto.getUsername();
         String password = dto.getPassword();
         String reqRole = dto.getRole();
-        //判断数据库中是否有该学员，有就封装到对应的VO，没有就返回空
+
+        // 对用户名进行判空检验
         if ("member".equals(reqRole)) {
-            Member member = memberMapper.getByUsernameAndPwd(username, password);
+            Member member = memberMapper.getByUsername(username);
             if (member == null) {
                 return null;
             }
+            // 数据库password必须为BCrypt密文$2b$开头
+            if (!BCrypt.checkpw(password, member.getPassword())) {
+                return null;
+            }
+
+            // 将所有信息封装在LoginVo里面
             LoginVo vo = new LoginVo();
             vo.setRole("member");
-
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", member.getId());
             claims.put("username", member.getUsername());
@@ -53,15 +63,18 @@ public class LoginServiceImpl implements LoginService {
             userInfo.setGroupId(member.getGroupId());
             vo.setUserInfo(userInfo);
             return vo;
-            //判断数据库中是否有该学长，有就封装到对应的VO，没有就返回空
+
         } else if ("senior".equals(reqRole)) {
-            Senior senior = seniorMapper.getByUsernameAndPwd(username, password);
+            Senior senior = seniorMapper.getByUsername(username);
             if (senior == null) {
                 return null;
             }
+            if (!BCrypt.checkpw(password, senior.getPassword())) {
+                return null;
+            }
+
             LoginVo vo = new LoginVo();
             vo.setRole("senior");
-
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", senior.getId());
             claims.put("username", senior.getUsername());

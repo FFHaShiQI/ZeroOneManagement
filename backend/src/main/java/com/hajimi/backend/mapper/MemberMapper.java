@@ -5,13 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface MemberMapper {
-    /**
-     * W
-     * 学员的数据库访问接口
-     * username
-     * password
-     */
-    Member getByUsernameAndPwd(String username, String password);
+
+    Member getByUsername(String username);
 
     void saveInMember(Member member);
 }
+

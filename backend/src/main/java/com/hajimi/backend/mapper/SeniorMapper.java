@@ -11,7 +11,8 @@ public interface SeniorMapper {
      * username
      * password
      */
-    Senior getByUsernameAndPwd(String username, String password);
+    Senior getByUsername(String username);
 
     void saveInSenior(Senior senior);
 }
+
