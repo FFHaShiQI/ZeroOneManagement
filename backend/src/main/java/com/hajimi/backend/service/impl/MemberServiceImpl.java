@@ -15,6 +15,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(String ids) {
         if (ids == null || ids.isEmpty()) {
             return;
@@ -91,6 +93,11 @@ public class MemberServiceImpl implements MemberService {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         if (!idList.isEmpty()) {
+            for (Integer memberId : idList) {
+                Integer groupId = memberMapper.getGroupIdById(memberId);
+                Integer groupSize = groupMapper.getGroupSizeById(groupId);
+                groupMapper.updateGroupSize(groupSize - 1, groupId);
+            }
             memberMapper.deleteByIds(idList);
         }
     }

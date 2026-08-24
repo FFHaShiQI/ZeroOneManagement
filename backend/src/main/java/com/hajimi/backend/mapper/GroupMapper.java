@@ -21,4 +21,10 @@ public interface GroupMapper {
      * @return 小组实体
      */
     GroupVo getById(Integer id);
+
+    // 根据小组id查询小组人数
+    Integer getGroupSizeById(Integer groupId);
+
+    // 更新小组人数
+    void updateGroupSize(Integer groupSize, Integer groupId);
 }
