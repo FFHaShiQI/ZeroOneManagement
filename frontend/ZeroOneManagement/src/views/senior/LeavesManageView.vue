@@ -5,6 +5,11 @@ import { pageQueryLeaves, auditLeave, deleteLeave } from '@/api/senior/leaves'
 import { LEAVE_TYPE_OPTIONS, LEAVE_STATUS_OPTIONS, optionLabel } from '@/constants/senior'
 import { usePageList } from '@/composables/usePageList'
 
+// 当前登录学长 id(审核时记录审核人)
+function getCurrentSeniorId() {
+  return Number(localStorage.getItem('id'))
+}
+
 function typeLabel(value) {
   return optionLabel(LEAVE_TYPE_OPTIONS, value)
 }
@@ -81,7 +86,8 @@ async function submitAudit(status) {
     const res = await auditLeave({
       id: auditForm.id,
       status: auditForm.status,
-      feedback: auditForm.feedback
+      feedback: auditForm.feedback,
+      seniorId: getCurrentSeniorId()
     })
     if (res.code === 1) {
       ElMessage.success(status === 1 ? '已同意' : '已驳回')
@@ -189,8 +195,7 @@ async function handleRowDelete(row) {
           </template>
         </el-table-column>
         <el-table-column label="审核人" min-width="100" show-overflow-tooltip>
-          <!-- 后端当前仅返回 seniorId(未返回审核者姓名),TODO: 后端补齐姓名后改用姓名展示 -->
-          <template #default="{ row }">{{ row.seniorId ?? '-' }}</template>
+          <template #default="{ row }">{{ row.seniorName ?? row.seniorId ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="反馈信息" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">{{ row.feedback ?? '-' }}</template>

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
  * @Description: com.hajimi.backend.common
  * @version: 1.0
  */
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class Result<T> {
     private Integer code; //编码：1成功，0为失败
