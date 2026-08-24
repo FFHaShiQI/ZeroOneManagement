@@ -2,70 +2,33 @@
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { pageQueryGroups, addGroup, updateGroup, deleteGroups } from '@/api/senior/groups'
-
-// 小组语言类型: 0=C 1=C++ 2=Java
-const LANGUAGE_OPTIONS = [
-  { label: 'C', value: 0 },
-  { label: 'C++', value: 1 },
-  { label: 'Java', value: 2 }
-]
+import { getAllSeniors } from '@/api/senior/senior'
+import { GROUP_LANGUAGE_OPTIONS, optionLabel } from '@/constants/senior'
+import { usePageList } from '@/composables/usePageList'
 
 function languageLabel(value) {
-  return LANGUAGE_OPTIONS.find((opt) => opt.value === value)?.label ?? '-'
+  return optionLabel(GROUP_LANGUAGE_OPTIONS, value)
 }
 
-// ---------- 查询区 ----------
-const queryParams = reactive({
-  groupName: '',
-  groupType: null,
-  senior: '',
-  page: 1,
-  pageSize: 10
+const { queryParams, tableData, total, loading, loadList, handleQuery, handleReset, handleSizeChange, handleCurrentChange } = usePageList({
+  fetchFn: pageQueryGroups,
+  initialParams: { groupName: '', groupType: null, senior: '' }
 })
 
-const tableData = ref([])
-const total = ref(0)
-const loading = ref(false)
+// ---------- 学长下拉选项 ----------
+const seniorOptions = ref([])
+async function loadSeniorOptions() {
+  const res = await getAllSeniors()
+  seniorOptions.value = res.code === 1 ? res.data || [] : []
+}
+onMounted(loadSeniorOptions)
+
+// 表格中按学长 id 显示姓名,查不到时回退 id
+function seniorNameById(seniorId) {
+  return seniorOptions.value.find((opt) => opt.id === seniorId)?.name ?? seniorId ?? '-'
+}
+
 const selectedRows = ref([])
-
-async function loadList() {
-  loading.value = true
-  try {
-    const res = await pageQueryGroups(queryParams)
-    if (res.code === 1) {
-      tableData.value = res.data?.rows || []
-      total.value = res.data?.total || 0
-    } else {
-      ElMessage.error(res.msg || '查询失败')
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-function handleQuery() {
-  queryParams.page = 1
-  loadList()
-}
-
-function handleReset() {
-  queryParams.groupName = ''
-  queryParams.groupType = null
-  queryParams.senior = ''
-  queryParams.page = 1
-  loadList()
-}
-
-function handleSizeChange(size) {
-  queryParams.pageSize = size
-  queryParams.page = 1
-  loadList()
-}
-
-function handleCurrentChange(page) {
-  queryParams.page = page
-  loadList()
-}
 
 // ---------- 新建/编辑弹窗(共用) ----------
 const dialogVisible = ref(false)
@@ -78,7 +41,7 @@ const form = reactive({
   language: null,
   groupSize: null,
   clockLink: '',
-  leaderId: null
+  seniorId: null // 关联学长 id(后端字段名 seniorId)
 })
 
 const rules = {
@@ -91,7 +54,7 @@ const rules = {
 function openAddDialog() {
   dialogTitle.value = '新建小组'
   Object.assign(form, {
-    id: null, name: '', language: null, groupSize: null, clockLink: '', leaderId: null
+    id: null, name: '', language: null, groupSize: null, clockLink: '', seniorId: null
   })
   dialogVisible.value = true
 }
@@ -104,8 +67,7 @@ function openEditDialog(row) {
     language: row.language,
     groupSize: row.groupSize,
     clockLink: row.clockLink,
-    // TODO: 后端当前返回 seniorId,Apifox 契约为 leaderId,待后端对齐
-    leaderId: row.leaderId ?? row.seniorId
+    seniorId: row.seniorId ?? row.leaderId ?? null
   })
   dialogVisible.value = true
 }
@@ -171,8 +133,6 @@ async function handleRowDelete(row) {
     ElMessage.error(res.msg || '删除失败')
   }
 }
-
-onMounted(loadList)
 </script>
 
 <template>
@@ -197,7 +157,7 @@ onMounted(loadList)
             style="width: 120px"
           >
             <el-option
-              v-for="opt in LANGUAGE_OPTIONS"
+              v-for="opt in GROUP_LANGUAGE_OPTIONS"
               :key="opt.value"
               :label="opt.label"
               :value="opt.value"
@@ -224,7 +184,7 @@ onMounted(loadList)
     <el-card shadow="never" class="group-card">
       <div class="group-toolbar">
         <el-button type="primary" @click="openAddDialog">新建</el-button>
-        <el-button type="danger" @click="handleBatchDelete">删除</el-button>
+        <el-button type="danger" @click="handleBatchDelete">批量删除</el-button>
       </div>
 
       <el-table
@@ -251,9 +211,7 @@ onMounted(loadList)
         </el-table-column>
         <el-table-column prop="groupSize" label="小组人数" width="100" align="center" />
         <el-table-column label="关联学长" width="120" align="center">
-          <template #default="{ row }">
-            {{ row.leaderId ?? row.seniorId ?? '-' }}
-          </template>
+          <template #default="{ row }">{{ seniorNameById(row.seniorId) }}</template>
         </el-table-column>
         <el-table-column label="操作" width="140" align="center" fixed="right">
           <template #default="{ row }">
@@ -286,21 +244,23 @@ onMounted(loadList)
         <el-form-item label="小组类型" prop="language">
           <el-select v-model="form.language" placeholder="请选择语言类型" style="width: 100%">
             <el-option
-              v-for="opt in LANGUAGE_OPTIONS"
+              v-for="opt in GROUP_LANGUAGE_OPTIONS"
               :key="opt.value"
               :label="opt.label"
               :value="opt.value"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="小组人数" prop="groupSize">
-          <el-input-number v-model="form.groupSize" :min="1" :max="99" placeholder="最大人数限制" />
+        <el-form-item label="小组规模" prop="groupSize">
+          <el-input-number v-model="form.groupSize" :min="1" :max="99" placeholder="预设小组人数" />
         </el-form-item>
         <el-form-item label="打卡表链接" prop="clockLink">
           <el-input v-model="form.clockLink" placeholder="https://..." />
         </el-form-item>
-        <el-form-item label="关联学长" prop="leaderId">
-          <el-input-number v-model="form.leaderId" :min="1" placeholder="学长id" />
+        <el-form-item label="关联学长" prop="seniorId">
+          <el-select v-model="form.seniorId" clearable filterable placeholder="请选择学长" style="width: 100%">
+            <el-option v-for="opt in seniorOptions" :key="opt.id" :label="opt.name" :value="opt.id" />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>

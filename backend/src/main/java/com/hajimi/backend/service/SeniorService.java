@@ -1,7 +1,10 @@
 package com.hajimi.backend.service;
 
 import com.hajimi.backend.dto.SeniorUpdateDto;
+import com.hajimi.backend.vo.SeniorIdName;
 import com.hajimi.backend.vo.SeniorVo;
+
+import java.util.List;
 
 /**
  * @Auther: Cat
@@ -24,4 +27,10 @@ public interface SeniorService {
      * @param dto 修改学长信息请求体（id 必填）
      */
     void updateById(SeniorUpdateDto dto);
+
+    /**
+     * 查询全部学长(id + 姓名,供下拉选择)
+     * @return 学长选项列表
+     */
+    List<SeniorIdName> getAll();
 }

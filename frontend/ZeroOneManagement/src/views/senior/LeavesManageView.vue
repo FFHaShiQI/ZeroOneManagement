@@ -1,88 +1,38 @@
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { pageQueryLeaves, auditLeave, deleteLeave } from '@/api/senior/leaves'
+import { LEAVE_TYPE_OPTIONS, LEAVE_STATUS_OPTIONS, optionLabel } from '@/constants/senior'
+import { usePageList } from '@/composables/usePageList'
 
-// 请假类型(TODO: 与后端确认枚举,暂按 1事假 2病假 3其他)
-const TYPE_OPTIONS = [
-  { label: '事假', value: 1 },
-  { label: '病假', value: 2 },
-  { label: '其他', value: 3 }
-]
-// 审核状态: 0待审批 1同意 2驳回
-const STATUS_OPTIONS = [
-  { label: '待审批', value: 0 },
-  { label: '审核成功', value: 1 },
-  { label: '已驳回', value: 2 }
-]
+// 当前登录学长 id(审核时记录审核人)
+function getCurrentSeniorId() {
+  return Number(localStorage.getItem('id'))
+}
 
 function typeLabel(value) {
-  return TYPE_OPTIONS.find((opt) => opt.value === value)?.label ?? '-'
+  return optionLabel(LEAVE_TYPE_OPTIONS, value)
 }
 function statusLabel(value) {
-  return STATUS_OPTIONS.find((opt) => opt.value === value)?.label ?? '-'
+  return optionLabel(LEAVE_STATUS_OPTIONS, value)
 }
 function statusTagType(value) {
   return { 0: 'warning', 1: 'success', 2: 'danger' }[value] ?? 'info'
 }
 
-// ---------- 查询区 ----------
-const queryParams = reactive({
-  name: '',
-  type: null,
-  status: null,
-  start: '',
-  end: '',
-  page: 1,
-  pageSize: 5 // 原型默认每页 5 条
+const { queryParams, tableData, total, loading, loadList, handleQuery, handleReset, handleSizeChange, handleCurrentChange } = usePageList({
+  fetchFn: pageQueryLeaves,
+  initialParams: { name: '', type: null, status: null, dateRange: [] },
+  defaultPageSize: 5, // 原型默认每页 5 条
+  // 日期范围选择器拆分为后端需要的 start/end
+  buildParams: ({ dateRange, ...rest }) => ({
+    ...rest,
+    start: dateRange?.[0] || '',
+    end: dateRange?.[1] || ''
+  }),
+  // 原型要求:默认待审批置顶(仅当前页内排序,跨页一致性需由后端排序支持)
+  transformRows: (rows) => [...rows].sort((a, b) => (a.status ?? 99) - (b.status ?? 99))
 })
-
-const tableData = ref([])
-const total = ref(0)
-const loading = ref(false)
-
-async function loadList() {
-  loading.value = true
-  try {
-    const res = await pageQueryLeaves(queryParams)
-    if (res.code === 1) {
-      const rows = res.data?.rows || []
-      // 原型要求:默认待审批置顶(当前页内排序,分页由后端负责)
-      tableData.value = [...rows].sort((a, b) => (a.status ?? 99) - (b.status ?? 99))
-      total.value = res.data?.total || 0
-    } else {
-      ElMessage.error(res.msg || '查询失败')
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-function handleQuery() {
-  queryParams.page = 1
-  loadList()
-}
-
-function handleReset() {
-  queryParams.name = ''
-  queryParams.type = null
-  queryParams.status = null
-  queryParams.start = ''
-  queryParams.end = ''
-  queryParams.page = 1
-  loadList()
-}
-
-function handleSizeChange(size) {
-  queryParams.pageSize = size
-  queryParams.page = 1
-  loadList()
-}
-
-function handleCurrentChange(page) {
-  queryParams.page = page
-  loadList()
-}
 
 // ---------- 审批弹窗 ----------
 const auditVisible = ref(false)
@@ -90,17 +40,37 @@ const auditFormRef = ref(null)
 const submitting = ref(false)
 const auditForm = reactive({
   id: null,
-  name: '',
+  memberName: '',
+  groupName: '',
+  type: null,
+  reason: '',
+  image: '',
+  start: '',
+  end: '',
   status: null, // 1同意 2驳回
   feedback: ''
 })
 
-const auditRules = {
-  feedback: [{ required: true, message: '请输入审核意见', trigger: 'blur' }]
-}
+// 驳回时必须填写审核意见,同意时意见可选
+const auditRules = computed(() => ({
+  feedback: auditForm.status === 2
+    ? [{ required: true, message: '驳回时必须填写审核意见', trigger: 'blur' }]
+    : []
+}))
 
 function openAuditDialog(row) {
-  Object.assign(auditForm, { id: row.id, name: row.name ?? row.memberName ?? '', status: null, feedback: '' })
+  Object.assign(auditForm, {
+    id: row.id,
+    memberName: row.memberName ?? '',
+    groupName: row.groupName ?? '',
+    type: row.type,
+    reason: row.reason ?? '',
+    image: row.image ?? '',
+    start: row.start ?? '',
+    end: row.end ?? '',
+    status: row.status,
+    feedback: ''
+  })
   auditVisible.value = true
 }
 
@@ -116,7 +86,8 @@ async function submitAudit(status) {
     const res = await auditLeave({
       id: auditForm.id,
       status: auditForm.status,
-      feedback: auditForm.feedback
+      feedback: auditForm.feedback,
+      seniorId: getCurrentSeniorId()
     })
     if (res.code === 1) {
       ElMessage.success(status === 1 ? '已同意' : '已驳回')
@@ -147,8 +118,6 @@ async function handleRowDelete(row) {
     ElMessage.error(res.msg || '删除失败')
   }
 }
-
-onMounted(loadList)
 </script>
 
 <template>
@@ -167,30 +136,23 @@ onMounted(loadList)
         </el-form-item>
         <el-form-item label="请假类型">
           <el-select v-model="queryParams.type" placeholder="请选择" clearable style="width: 110px">
-            <el-option v-for="opt in TYPE_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
+            <el-option v-for="opt in LEAVE_TYPE_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="审批状态">
           <el-select v-model="queryParams.status" placeholder="请选择" clearable style="width: 110px">
-            <el-option v-for="opt in STATUS_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
+            <el-option v-for="opt in LEAVE_STATUS_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="开始日期">
+        <el-form-item label="请假日期">
           <el-date-picker
-            v-model="queryParams.start"
-            type="date"
-            placeholder="请选择日期"
+            v-model="queryParams.dateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             value-format="YYYY-MM-DD"
-            style="width: 150px"
-          />
-        </el-form-item>
-        <el-form-item label="结束日期">
-          <el-date-picker
-            v-model="queryParams.end"
-            type="date"
-            placeholder="请选择日期"
-            value-format="YYYY-MM-DD"
-            style="width: 150px"
+            style="width: 240px"
           />
         </el-form-item>
         <el-form-item>
@@ -204,7 +166,7 @@ onMounted(loadList)
     <el-card shadow="never" class="page-card">
       <el-table v-loading="loading" :data="tableData" border>
         <el-table-column label="学员" min-width="90" show-overflow-tooltip>
-          <template #default="{ row }">{{ row.name ?? row.memberName ?? '-' }}</template>
+          <template #default="{ row }">{{ row.memberName ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="所属小组" min-width="100" show-overflow-tooltip>
           <template #default="{ row }">{{ row.groupName ?? '-' }}</template>
@@ -222,10 +184,10 @@ onMounted(loadList)
           </template>
         </el-table-column>
         <el-table-column label="假期开始时间" min-width="120">
-          <template #default="{ row }">{{ row.startTime ?? '-' }}</template>
+          <template #default="{ row }">{{ row.start ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="请假结束时间" min-width="120">
-          <template #default="{ row }">{{ row.endTime ?? '-' }}</template>
+          <template #default="{ row }">{{ row.end ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="审核状态" width="100" align="center">
           <template #default="{ row }">
@@ -233,7 +195,7 @@ onMounted(loadList)
           </template>
         </el-table-column>
         <el-table-column label="审核人" min-width="100" show-overflow-tooltip>
-          <template #default="{ row }">{{ row.reviewer ?? '-' }}</template>
+          <template #default="{ row }">{{ row.seniorName ?? row.seniorId ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="反馈信息" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">{{ row.feedback ?? '-' }}</template>
@@ -267,18 +229,31 @@ onMounted(loadList)
       </div>
     </el-card>
 
-    <!-- 审批弹窗 -->
-    <el-dialog v-model="auditVisible" title="审批" width="480px" destroy-on-close>
+    <!-- 审批弹窗:展示完整请假信息后再审批 -->
+    <el-dialog v-model="auditVisible" title="审批" width="520px" destroy-on-close>
       <el-form ref="auditFormRef" :model="auditForm" :rules="auditRules" label-width="90px">
-        <el-form-item label="学员">
-          <span>{{ auditForm.name }}</span>
-        </el-form-item>
+        <el-descriptions :column="2" border size="small" style="margin-bottom: 16px">
+          <el-descriptions-item label="学员">{{ auditForm.memberName || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="所属小组">{{ auditForm.groupName || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="请假类型">{{ typeLabel(auditForm.type) }}</el-descriptions-item>
+          <el-descriptions-item label="审核状态">
+            <el-tag :type="statusTagType(auditForm.status)">{{ statusLabel(auditForm.status) }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="假期时间" :span="2">
+            {{ auditForm.start || '-' }} ~ {{ auditForm.end || '-' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="佐证图片" :span="2">
+            <el-link v-if="auditForm.image" type="primary" :href="auditForm.image" target="_blank">查看</el-link>
+            <span v-else>-</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="请假理由" :span="2">{{ auditForm.reason || '-' }}</el-descriptions-item>
+        </el-descriptions>
         <el-form-item label="反馈信息" prop="feedback">
           <el-input
             v-model="auditForm.feedback"
             type="textarea"
             :rows="3"
-            placeholder="请输入审核意见"
+            :placeholder="auditForm.status === 2 ? '驳回时必须填写审核意见' : '审核意见(同意时可选)'"
             maxlength="200"
             show-word-limit
           />

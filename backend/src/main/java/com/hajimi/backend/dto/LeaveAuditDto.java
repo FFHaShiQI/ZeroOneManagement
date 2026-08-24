@@ -16,4 +16,8 @@ public class LeaveAuditDto {
      * 审核意见
      */
     private String feedback;
+    /**
+     *  学长ID
+     */
+    private Integer seniorId;
 }

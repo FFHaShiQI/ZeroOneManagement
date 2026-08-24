@@ -4,9 +4,12 @@ import com.hajimi.backend.dto.SeniorUpdateDto;
 import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.SeniorService;
+import com.hajimi.backend.vo.SeniorIdName;
 import com.hajimi.backend.vo.SeniorVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Auther: Cat
@@ -29,5 +32,10 @@ public class SeniorServiceImpl implements SeniorService {
     @Override
     public void updateById(SeniorUpdateDto dto) {
         seniorMapper.updateById(dto);
+    }
+
+    @Override
+    public List<SeniorIdName> getAll() {
+        return seniorMapper.selectAll();
     }
 }
