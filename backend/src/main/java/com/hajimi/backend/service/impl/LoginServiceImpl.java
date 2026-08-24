@@ -1,7 +1,7 @@
 package com.hajimi.backend.service.impl;
 
 import com.hajimi.backend.dto.LoginDto;
-import com.hajimi.backend.Utils.JwtUtils;
+import com.hajimi.backend.utils.JwtUtils;
 import com.hajimi.backend.vo.LoginVo;
 import com.hajimi.backend.vo.UserInfoVo;
 import com.hajimi.backend.entity.Member;
