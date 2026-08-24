@@ -135,7 +135,7 @@ const handleBack = () => {
                 
                 <div class="form-row" v-else>
                     <label>邀请码</label>
-                    <el-input v-model="form.inviteCode" placeholder="请输入学长邀请码" size="large" />
+                     <el-input v-model="form.inviteCode" type="password" show-password placeholder="请输入学长邀请码" size="large" />
                 </div>
 
                 <!-- 按钮区 -->
@@ -190,6 +190,10 @@ const handleBack = () => {
     display: flex;
     align-items: center;
     margin-bottom: 24px;
+}
+
+.form-row .el-input__password {
+    display: none;
 }
 
 .form-row label {
