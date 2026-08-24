@@ -56,18 +56,17 @@ public class RegisterServiceImpl implements RegisterService {
         //存学员数据(密码BCrypt加密存储,与登录校验保持一致)
         if(Boolean.FALSE.equals(dto.getOption())){
             Member member = new Member();
-            String encryptPwd = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+
             member.setUsername(dto.getUsername());
-            member.setPassword(encryptPwd);
+            member.setPassword(dto.getPassword());
             member.setGroupId(dto.getGroupId());
             memberMapper.saveInMember(member);
         }
 
         if(Boolean.TRUE.equals(dto.getOption())){
             Senior senior = new Senior();
-            String encryptPwd = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
             senior.setUsername(dto.getUsername());
-            senior.setPassword(encryptPwd);
+            senior.setPassword(dto.getPassword());
             seniorMapper.saveInSenior(senior);
         }
     }

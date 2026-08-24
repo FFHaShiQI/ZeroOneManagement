@@ -9,7 +9,6 @@ import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.LoginService;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,7 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * W
-     * 登录（加密判断）
+     * 登录
      * dto
      */
     @Override
@@ -41,8 +40,8 @@ public class LoginServiceImpl implements LoginService {
             if (member == null) {
                 return null;
             }
-            // 数据库password必须为BCrypt密文$2b$开头
-            if (!BCrypt.checkpw(password, member.getPassword())) {
+            // 直接明文比对密码
+            if (!password.equals(member.getPassword())) {
                 return null;
             }
 
