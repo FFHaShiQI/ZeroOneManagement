@@ -34,7 +34,6 @@ public class LeavesServiceImpl implements LeavesService {
         }
         PageHelper.startPage(leaveApplyDto.getPage(), leaveApplyDto.getPageSize());
 
-
         //执行查询
         List<LeaveApplyVo> leaveList = leavesMapper.fuzzySelect(leaveApplyDto);
 

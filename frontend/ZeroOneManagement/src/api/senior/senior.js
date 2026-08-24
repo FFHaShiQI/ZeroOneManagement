@@ -9,3 +9,8 @@ export function getSeniorProfile(id) {
 export function updateSeniorProfile(data) {
   return request.put('/senior', data)
 }
+
+// 查询全部学长(仅 id + 姓名,供下拉选择使用)
+export function getAllSeniors() {
+  return request.get('/senior/All')
+}

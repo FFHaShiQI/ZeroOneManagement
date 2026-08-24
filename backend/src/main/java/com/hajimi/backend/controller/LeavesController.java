@@ -28,6 +28,7 @@ public class LeavesController {
      * W
      * 分页模糊查询请假记录
      * leaveApplyDto
+     * 测试的时候记得看看数据库表中leaveapply是不是leave_apply要不然会报错
      */
     @GetMapping("/senior/leaves")
     public Result<PageResult<LeaveApplyVo>> leavesPageResult(LeaveApplyDto leaveApplyDto) {
@@ -45,7 +46,7 @@ public class LeavesController {
      * leaveAuditDto
      */
     @PutMapping("/senior/leaves")
-    public Result<Void> leaveAudit(@RequestBody LeaveAuditDto leaveAuditDto) {
+    public Result leaveAudit(@RequestBody LeaveAuditDto leaveAuditDto) {
         try {
             leaveAuditService.auditResult(leaveAuditDto);
             return Result.success();
@@ -60,7 +61,7 @@ public class LeavesController {
      * id
      */
     @DeleteMapping("/senior/leaves/{id}")
-    public Result<Void> leaveDelete(@PathVariable Integer id) {
+    public Result leaveDelete(@PathVariable Integer id) {
         try {
             leaveDeleteService.deleteLeaveById(id);
             return Result.success();

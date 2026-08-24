@@ -3,6 +3,7 @@ package com.hajimi.backend.mapper;
 import com.hajimi.backend.vo.SeniorVo;
 import com.hajimi.backend.dto.SeniorUpdateDto;
 import com.hajimi.backend.entity.Senior;
+import com.hajimi.backend.vo.SeniorIdName;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -54,4 +55,11 @@ public interface SeniorMapper {
      */
     @Insert("insert into senior (username, password) values (#{username}, #{password})")
     void saveInSenior(Senior senior);
+
+    /**
+     * 查询全部学长(id + 姓名,供下拉选择)
+     * @return 学长选项列表
+     */
+    @Select("select id, name from senior order by id asc")
+    java.util.List<SeniorIdName> selectAll();
 }
