@@ -6,7 +6,6 @@ import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.RegisterService;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hajimi.backend.Utils.GlobalExceptionHandler.BizException;
@@ -55,18 +54,17 @@ public class RegisterServiceImpl implements RegisterService {
 
         if(Boolean.FALSE.equals(dto.getOption())){
             Member member = new Member();
-            String encryptPwd = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+
             member.setUsername(dto.getUsername());
-            member.setPassword(encryptPwd);
+            member.setPassword(dto.getPassword());
             member.setGroupId(dto.getGroupId());
             memberMapper.saveInMember(member);
         }
 
         if(Boolean.TRUE.equals(dto.getOption())){
             Senior senior = new Senior();
-            String encryptPwd = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
             senior.setUsername(dto.getUsername());
-            senior.setPassword(encryptPwd);
+            senior.setPassword(dto.getPassword());
             seniorMapper.saveInSenior(senior);
         }
     }
