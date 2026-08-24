@@ -152,7 +152,7 @@ onMounted(loadProfile)
           <el-input v-model="form.name" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" disabled placeholder="类型不可修改" style="width: 100%">
+          <el-select v-model="form.type" placeholder="请选择类型" style="width: 100%">
             <el-option v-for="opt in SENIOR_TYPE_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
           </el-select>
         </el-form-item>

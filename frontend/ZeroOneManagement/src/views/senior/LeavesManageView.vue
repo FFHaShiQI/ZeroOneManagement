@@ -177,9 +177,10 @@ async function handleRowDelete(row) {
         <el-table-column label="理由" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">{{ row.reason ?? '-' }}</template>
         </el-table-column>
-        <el-table-column label="佐证图片" min-width="90" align="center">
+       <el-table-column label="佐证图片" min-width="90" align="center">
           <template #default="{ row }">
-            <el-link v-if="row.image" type="primary" :href="row.image" target="_blank">查看</el-link>
+            <el-image v-if="row.image" :src="row.image" :preview-src-list="[row.image]" :preview-teleported="true"
+              fit="cover" style="width: 50px; height: 50px; border-radius: 4px; cursor: pointer;" />
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -243,7 +244,9 @@ async function handleRowDelete(row) {
             {{ auditForm.start || '-' }} ~ {{ auditForm.end || '-' }}
           </el-descriptions-item>
           <el-descriptions-item label="佐证图片" :span="2">
-            <el-link v-if="auditForm.image" type="primary" :href="auditForm.image" target="_blank">查看</el-link>
+            <el-image v-if="auditForm.image" :src="auditForm.image" :preview-src-list="[auditForm.image]"
+              :preview-teleported="true" fit="cover"
+              style="width: 80px; height: 80px; border-radius: 4px; cursor: pointer;" />
             <span v-else>-</span>
           </el-descriptions-item>
           <el-descriptions-item label="请假理由" :span="2">{{ auditForm.reason || '-' }}</el-descriptions-item>
