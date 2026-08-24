@@ -9,6 +9,7 @@ import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.LoginService;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
