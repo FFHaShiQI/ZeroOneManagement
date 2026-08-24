@@ -13,11 +13,11 @@ import java.util.List;
  */
 @Data
 public class GroupVo {
-    private Integer id;             //小组编号
-    private String name;            //小组名
-    private Integer language;       //小组语言类型：0C 1C++ 2Java
-    private String clockLink;       //打卡表超链接
-    private Integer groupSize;      //小组规模（人数）
-    private String seniorName;      //小学长昵称
-    private List<MemberVo> members; //组员列表
+    private Integer id;             // 小组编号
+    private String name;            // 小组名
+    private Integer language;       // 小组语言类型：0C 1C++ 2Java
+    private String clockLink;       // 打卡表超链接
+    private Integer groupSize;      // 小组规模（人数）
+    private String seniorName;      // 小学长昵称
+    private List<MemberVo> members; // 组员列表
 }

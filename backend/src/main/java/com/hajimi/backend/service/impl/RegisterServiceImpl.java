@@ -3,6 +3,7 @@ package com.hajimi.backend.service.impl;
 import com.hajimi.backend.dto.RegisterDto;
 import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.entity.Senior;
+import com.hajimi.backend.mapper.GroupMapper;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.RegisterService;
@@ -16,6 +17,8 @@ public class RegisterServiceImpl implements RegisterService {
     private MemberMapper memberMapper;
     @Autowired
     private SeniorMapper seniorMapper;
+    @Autowired
+    private GroupMapper groupMapper;
 
     //固定学长邀请码
     private static final String SENIOR_INVITE_CODE = "STAR2026";
@@ -58,7 +61,13 @@ public class RegisterServiceImpl implements RegisterService {
             member.setUsername(dto.getUsername());
             member.setPassword(dto.getPassword());
             member.setGroupId(dto.getGroupId());
+            member.setImage("https://01star.oss-cn-beijing.aliyuncs.com/2026/08/cb4ead06-5bb0-4bf2-87e1-a5725c978b90.jpeg");
             memberMapper.saveInMember(member);
+
+            Integer groupSize = groupMapper.getGroupSizeById(dto.getGroupId());
+            groupMapper.updateGroupSize(groupSize + 1, dto.getGroupId());
+
+
         }
 
         if(Boolean.TRUE.equals(dto.getOption())){

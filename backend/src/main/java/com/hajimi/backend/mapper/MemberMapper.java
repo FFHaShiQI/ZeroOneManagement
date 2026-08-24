@@ -63,7 +63,7 @@ public interface MemberMapper {
      * 新增组员(注册)
      * @param member 组员实体
      */
-    @Insert("insert into member (username, password, group_id) values (#{username}, #{password}, #{groupId})")
+    @Insert("insert into member (username, password, group_id, image) values (#{username}, #{password}, #{groupId}, #{image})")
     void saveInMember(Member member);
 
     /**
@@ -94,4 +94,8 @@ public interface MemberMapper {
      * @return 影响行数
      */
     int deleteByIds(@Param("list") List<Integer> ids);
+
+    // 根据组员id查询小组id
+    @Select("select group_id from member where member.id = #{memberId}")
+    Integer getGroupIdById(Integer memberId);
 }
