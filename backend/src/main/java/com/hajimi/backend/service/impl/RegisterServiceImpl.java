@@ -6,10 +6,9 @@ import com.hajimi.backend.entity.Senior;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.mapper.SeniorMapper;
 import com.hajimi.backend.service.RegisterService;
-import com.hajimi.backend.utils.BizExceptionHandler.BizException;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.hajimi.backend.exception.globalExceptionHandler.BizException;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
@@ -53,7 +52,6 @@ public class RegisterServiceImpl implements RegisterService {
             }
         }
 
-        //存学员数据(密码BCrypt加密存储,与登录校验保持一致)
         if(Boolean.FALSE.equals(dto.getOption())){
             Member member = new Member();
 
