@@ -24,11 +24,18 @@ request.interceptors.request.use((config) => {
 
 // axios 的响应 response 拦截器
 request.interceptors.response.use(
-  (response) => { // 成功回调
+  (response) => { //成功回调
     return response.data
   },
-  (error) => { // 失败回调
-
+  (error) => { //失败回调
+    // 后端拦截器返回401时，清除本地登录信息并跳转至登录页
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('userData')
+      localStorage.removeItem('id')
+      localStorage.removeItem('groupId')
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
   }
 )
 
