@@ -206,13 +206,11 @@ async function handleRowDelete(row) {
           <template #default="{ row }">{{ row.createTime ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="操作栏" width="140" align="center" fixed="right">
-          <!-- 原型:仅待审批记录显示审批/删除 -->
           <template #default="{ row }">
-            <template v-if="row.status === 0">
-              <el-button link type="primary" @click="openAuditDialog(row)">审批</el-button>
-              <el-button link type="danger" @click="handleRowDelete(row)">删除</el-button>
-            </template>
-            <span v-else>-</span>
+            <!-- 待审核状态才显示审批按钮 -->
+            <el-button v-if="row.status === 0" link type="primary" @click="openAuditDialog(row)">审批</el-button>
+            <!-- 所有状态都可以删除 -->
+            <el-button link type="danger" @click="handleRowDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

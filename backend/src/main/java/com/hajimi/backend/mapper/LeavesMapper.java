@@ -33,6 +33,6 @@ public interface LeavesMapper {
      * @param memberId 成员ID
      * @return 审核中的请假记录数量
      */
-    @Select("SELECT COUNT(*) FROM leaveapply WHERE member_id = #{memberId} AND status = 0")
+    @Select("SELECT COUNT(*) FROM leaveapply WHERE member_id = #{memberId}")
     Long countPendingByMemberId(@Param("memberId") Integer memberId);
 }
