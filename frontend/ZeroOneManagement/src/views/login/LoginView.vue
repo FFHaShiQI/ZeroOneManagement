@@ -32,14 +32,14 @@ const handleLogin = async () => {
     try {
         const res = await login(form)
         
-        // ✅ 1代表成功
+        //  1代表成功
         if (res.code === 1) {
             ElMessage.success('登录成功')
             
-            // 【核心修改】：直接存储整个 data 对象
+            // 直接存储整个 data 对象
             localStorage.setItem('userData', JSON.stringify(res.data))
             
-            // 【兼容旧代码】：为了不破坏之前写的“个人信息”和“小组信息”页面，顺手存一下 id 和 groupId
+            // 为了不破坏之前写的“个人信息”和“小组信息”页面，顺手存一下 id 和 groupId
             if (res.data.userInfo) {
                 localStorage.setItem('id', res.data.userInfo.id)
                 localStorage.setItem('groupId', res.data.userInfo.groupId)

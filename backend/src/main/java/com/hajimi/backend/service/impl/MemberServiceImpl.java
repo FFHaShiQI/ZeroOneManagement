@@ -6,6 +6,7 @@ import com.hajimi.backend.dto.MemberUpdateDto;
 import com.hajimi.backend.entity.Group;
 import com.hajimi.backend.entity.Member;
 import com.hajimi.backend.mapper.GroupMapper;
+import com.hajimi.backend.mapper.LeavesMapper;
 import com.hajimi.backend.mapper.MemberMapper;
 import com.hajimi.backend.service.MemberService;
 import com.hajimi.backend.vo.GroupVo;
@@ -36,6 +37,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private GroupMapper groupMapper;
+    @Autowired
+    private LeavesMapper leavesMapper;
 
     @Override
     public MemberVo getById(Integer id) {
@@ -81,8 +84,9 @@ public class MemberServiceImpl implements MemberService {
         memberMapper.insert(member);
     }
 
+
+
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(String ids) {
         if (ids == null || ids.isEmpty()) {
             return;
@@ -93,6 +97,16 @@ public class MemberServiceImpl implements MemberService {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         if (!idList.isEmpty()) {
+            // 检查每个要删除的学员是否有请假记录
+            for (Integer id : idList) {
+                Long leaveCount = leavesMapper.countPendingByMemberId(id);
+                if (leaveCount != null && leaveCount > 0) {
+                    // 错误提示
+                    MemberVo member = memberMapper.getById(id);
+                    String memberName = member != null ? member.getName() : "该学员";
+                    throw new RuntimeException(memberName + "有请假记录，无法删除");
+                }
+            }
             for (Integer memberId : idList) {
                 Integer groupId = memberMapper.getGroupIdById(memberId);
                 Integer groupSize = groupMapper.getGroupSizeById(groupId);
@@ -101,6 +115,7 @@ public class MemberServiceImpl implements MemberService {
             memberMapper.deleteByIds(idList);
         }
     }
+
 
     @Override
     public GroupVo getGroup(Integer groupId) {

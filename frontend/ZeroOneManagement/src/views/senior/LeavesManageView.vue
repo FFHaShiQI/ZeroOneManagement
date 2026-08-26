@@ -69,7 +69,8 @@ function openAuditDialog(row) {
     start: row.start ?? '',
     end: row.end ?? '',
     status: row.status,
-    feedback: ''
+    feedback: '',
+    seniorName: row.seniorName ?? ''
   })
   auditVisible.value = true
 }
@@ -196,7 +197,7 @@ async function handleRowDelete(row) {
           </template>
         </el-table-column>
         <el-table-column label="审核人" min-width="100" show-overflow-tooltip>
-          <template #default="{ row }">{{ row.seniorName ?? row.seniorId ?? '-' }}</template>
+          <template #default="{ row }">{{ row.seniorName || '-' }}</template>
         </el-table-column>
         <el-table-column label="反馈信息" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">{{ row.feedback ?? '-' }}</template>
